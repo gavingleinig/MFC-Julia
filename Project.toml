@@ -1,0 +1,12 @@
+name = "MetricForestCompletion"
+uuid = "03f2b1b8-254c-421b-92a8-2d1b038456cd"
+version = "0.1.0"
+authors = ["gavingleinig <gavingleinig@gmail.com>"]
+
+[deps]
+Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+
+[compat]
+Distances = "0.10.12"
+Graphs = "1.14.0"
