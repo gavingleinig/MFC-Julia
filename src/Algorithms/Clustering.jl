@@ -12,7 +12,8 @@ end
 
 # helper functions
 
-function closest_point(point, 
+function closest_point(
+    point, 
     points::V, 
     dist_func::F
     )where {V<:AbstractVector, F<:Function} 
