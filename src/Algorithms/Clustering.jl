@@ -2,7 +2,7 @@
 # k_centering
 # perhaps use Julia's Clustering.jl? Not a bad idea I will look into it
 # we can further use diffrent clustering algorithems to see if we increase effincancy
-using()
+#using()
 
 struct ClusteringResult{T<:AbstractFloat}
     assignments::Vector{Int}
@@ -30,7 +30,7 @@ function closest_point(
             res = i
         end
 
-        i++
+        i+=1
     end
 
     return res
@@ -65,11 +65,11 @@ function k_centering(
     sizehint!(cur_distances, length(points))
 
 
-    second_index = 0
+    second_index = 1
 
     max_dist = dist_func(points[0], centroids[0])
 
-    i = 0
+    i = 1
 
     while i < length(points)
         dist = dist_func(points[i], centroids[0])
@@ -80,7 +80,7 @@ function k_centering(
 
         push!(cur_distances, dist)
 
-        i++
+        i+=1
     end
 
     push!(centroids, points[second_idex])
@@ -90,7 +90,7 @@ function k_centering(
         new_index = 0
         max_dist = minimum!([dist_func(points[0], centroids[length(centroids) - 1]), cur_distance[0]])
         cur_distance[0] = max_dist
-        i  = 1
+        i  = 2
         while i < length(points)
             dist = dist_func(points[0], centroids[length(centroids) - 1])
             if dist < cur_distance[i]
@@ -102,7 +102,7 @@ function k_centering(
                 new_index = i
             end
 
-            i++
+            i+=1
         end
 
         push!(centroids, points[new_index])
@@ -111,7 +111,7 @@ function k_centering(
     assignments = Vector{Int}()
     sizehint!(res, length(points))
 
-    i = 0
+    i = 1
 
     while i < length(points)
         push!(res, closet_point(points[i], centroids))
@@ -124,7 +124,8 @@ end
 
 
 
-function k_means()
+# function k_means()
 
 
-end
+# end
+
