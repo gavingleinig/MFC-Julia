@@ -34,13 +34,24 @@ function run_gaussian_test()
         dist_func
     )
 
-    # Print results
-    println("Test Results")
+    println("MFC Test Results")
     println("Data Type:           ", eltype(eltype(points)))
     println("Points Generated:    ", length(points))
     println("Clustering Runtime:  ", clustering_result.runtime, " seconds")
     println("MFC Total Runtime:   ", mfc_result.completion_runtime, " seconds")
     println("Cluster Edges Found: ", length(mfc_result.cluster_edges))
+
+    # Turn this Spanning Tree into a Single Link Clustering
+    # ie, delete all edges of weight larger than some threshold
+    #   potentially try all threshold values, and return one that gives closest sol to ground truth clustering
+    # ie, a more sophisticated way to go from dendrogram to clustering
+
+    # Evaluate
+    # Compare 
+    # ARE, NMI, etc...
+
+    # Print results
+
 end
 
 run_gaussian_test()
