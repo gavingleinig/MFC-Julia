@@ -6,7 +6,7 @@ struct WeightedEdge{T<:Real} # T must be a subtype of Real, ie Int, Float64, etc
     b::Int
 end
 
-# Tell Julia how to compare WeigthedEdges
+# Tell Julia how to compare WeigthedEdges; so can sort() later on
 Base.isless(e1::WeightedEdge, e2::WeightedEdge) = isless(e1.weight, e2.weight)
 
 # Compute Optimum MST for given graph
@@ -20,7 +20,7 @@ function mst!(n::Int, edges::Vector{WeightedEdge{T}}) where T
             union!(dj_sets, e.a, e.b) # merge two trees
             push!(kept_edges, e) # add edge to MST
             
-            # Step when there are n-1 edges in MST
+            # Stop when there are n-1 edges in MST
             length(kept_edges) == n - 1 && break
         end 
     end
