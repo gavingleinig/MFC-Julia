@@ -108,7 +108,7 @@ function k_centering(
         push!(centroids, points[new_index])
     end
 
-    assignments = Vector{Int}()
+    res = Vector{Int}()
     sizehint!(res, length(points))
 
     i = 1
