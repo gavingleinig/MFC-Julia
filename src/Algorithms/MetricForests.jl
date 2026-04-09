@@ -23,28 +23,35 @@ function metric_forest_completion(
     ### MST Each Cluster ###
     sub_cluster_start = time()
     
+
+    # Ie, points = [X1, X2, X3, X4, X5]
+    # Ie, cluster_assignments = [1, 1, 2, 2, 1]
+
     # Group original point indices by their assigned cluster
-    cluster_indices = [Int[] for _ in 1:cluster_count] # init vectors holding clusters
+    global_indices_by_cluster = [Int[] for _ in 1:cluster_count] # init vectors holding clusters
     for (global_index, cluster_id) in enumerate(cluster_assignments)
-        push!(cluster_indices[cluster_id], global_index)
+        push!(global_indices_by_cluster[cluster_id], global_index)
     end
+    # Ie, global_indices_by_cluster = [[1, 2, 5], [3, 4]]
     
     # Run MST on each cluster
     for c in 1:cluster_count
-        local_indices = cluster_indices[c]
+        # Ie, current_cluster_indices = [1, 2, 5]
+        current_cluster_indices = global_indices_by_cluster[c]
         
         # A cluster must have at least 2 points to form an edge
-        length(local_indices) < 2 && continue
+        length(current_cluster_indices) < 2 && continue
         
         # Extract data for points in cluster
-        cluster_points = points[local_indices]
+        # Ie, current_cluster_subset = [X1, X2, X5]
+        current_cluster_subset = points[current_cluster_indices]
         
-        local_mst_edges = mst_implicit(cluster_points, dist_func)
+        local_mst_edges = mst_implicit(current_cluster_subset, dist_func)
         
         # Map the local MST indices back to the global dataset indices
         for edge in local_mst_edges
-            global_a = local_indices[edge.a]
-            global_b = local_indices[edge.b]
+            global_a = current_cluster_indices[edge.a]
+            global_b = current_cluster_indices[edge.b]
             edge_weight = Float64(edge.weight)
             push!(cluster_edges, (global_a, global_b, edge_weight))
         end
