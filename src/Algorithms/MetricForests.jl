@@ -26,7 +26,7 @@ function metric_forest_completion(
 
     # Ie, points = [X1, X2, X3, X4, X5]
     # Ie, cluster_assignments = [1, 1, 2, 2, 1]
-    
+
     # Group original point indices by their assigned cluster
     global_indices_by_cluster = [Int[] for _ in 1:cluster_count] # init vectors holding clusters
     for (global_index, cluster_id) in enumerate(cluster_assignments)
@@ -40,10 +40,10 @@ function metric_forest_completion(
         current_cluster_indices = global_indices_by_cluster[c]
         
         # A cluster must have at least 2 points to form an edge
-        # Ie, cluster_points = [X1, X2, X5]
         length(current_cluster_indices) < 2 && continue
         
         # Extract data for points in cluster
+        # Ie, current_cluster_subset = [X1, X2, X5]
         current_cluster_subset = points[current_cluster_indices]
         
         local_mst_edges = mst_implicit(current_cluster_subset, dist_func)
