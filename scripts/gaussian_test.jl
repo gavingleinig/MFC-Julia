@@ -1,5 +1,6 @@
 using MetricForestCompletion
 using Random
+using Clustering
 
 function run_gaussian_test()
     # Setup Params
@@ -14,7 +15,7 @@ function run_gaussian_test()
     dist_func = euclidean 
 
     # Generate Dataset
-    points = generate_gaussians(
+    points, ground_truth = generate_gaussians(
         PrecisionType; 
         dim = dim, 
         num_centers = num_gauss, 
@@ -58,8 +59,7 @@ function run_gaussian_test()
 
 
     # Evaluate
-    # Compare 
-    # ARE, NMI, etc...
+
 
     # Print results
 
