@@ -48,6 +48,7 @@ function run_gaussian_test()
 
     # Using a distance threshold
     threshold = 1.5 # Maybe use some heuristic here
+                    # Perahps also try all threshold values, and return the one that is clostest to ground truth clustering
     threshold_result = single_linkage_threshold(all_ST_edges, num_points, threshold)
     
     println("Unique Clusters:    ", length(unique(threshold_result.assignments)))
@@ -56,12 +57,18 @@ function run_gaussian_test()
     # target_k = clusters
     # k_result = single_linkage_k_clusters(all_ST_edges, num_points, target_k)
 
+    ### Evaluation ###
+    println("Initial K-Centering:")
+    kc_ari = randindex(clustering_result.assignments, ground_truth)[1]
+    kc_nmi = mutualinfo(clustering_result.assignments, ground_truth, normed=true)
+    println("ARI:", round(kc_ari, digits=4))
+    println("NMI:", round(kc_nmi, digits=4))
 
-
-    # Evaluate
-
-
-    # Print results
+    println("\nMFC Single Linkage (Threshold):")
+    mfc_ari = randindex(threshold_result.assignments, ground_truth)[1]
+    mfc_nmi = mutualinfo(threshold_result.assignments, ground_truth, normed=true)
+    println("ARI:", round(mfc_ari, digits=4))
+    println("NMI:", round(mfc_nmi, digits=4))
 
 end
 
