@@ -64,8 +64,12 @@ function metric_forest_completion(
     
     # TODO: Implement the completion phase.
     # Ie, find shortest edges between the disconnected clusters to form global MST, or representatives, etc...
-    
+    unmapped_completion_edges = metric_forest_completion_Edges_approx_simple(points,cluster_count,global_indices_by_cluster)
+    completion_edges = mst_implicit(cluster_count, unmapped_completion_edges)
+
     completion_edges_runtime = time() - completion_edges_start
+
+
     
     total_runtime = time() - total_start_time
 
