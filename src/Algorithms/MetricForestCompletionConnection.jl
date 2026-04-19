@@ -25,7 +25,7 @@ function metric_forest_completion_Edges_approx_simple(
         for j in (i+i):cluster_count
             partition_j = global_indices_by_cluster[j]
 
-            if length(partition_i) == 0 || length(partition_j) ==0
+            if length(partition_i) == 0 || length(partition_j) == 0
                 continue
             end
 
