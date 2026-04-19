@@ -43,7 +43,7 @@ function single_linkage_k_clusters(
 )
     start_time = time()
     
-    # Sort edges by weight (ascending)
+    # Sort edges by weight, ascending
     sorted_edges = sort(edges, by = x -> x[3])
     
     # A ST with N vertices and N - k edges has k connected components

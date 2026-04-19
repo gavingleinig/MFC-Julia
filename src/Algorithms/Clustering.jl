@@ -14,25 +14,21 @@ end
 
 function closest_point(
     point, 
-    points::V, 
+    centroids::V, 
     dist_func::F
     )where {V<:AbstractVector, F<:Function} 
     #find the closet point from the given point to a list of points
-    res = 0
-    dist = dist_func(point, points[0])
-    i = 1 
+    res = 1
+    dist = dist_func(point, centroids[1])
+    
+    for i in 2:length(centroids)
+        cur_dist = dist_func(point, centroids[i])
 
-    while i < length(V)
-        cur_dist = dist_func(point, points[i])
-
-        if cur_dist > dist 
+        if cur_dist < dist 
             dist = cur_dist
             res = i
         end
-
-        i+=1
     end
-
     return res
 end
 
@@ -52,74 +48,46 @@ function k_centering(
     end
     
     if k <= 1
-        return ClusteringResult{Float64}([length(points), 0], 0) 
+        return ClusteringResult{Float64}(ones(Int, length(points)), 0.0)
     end
 
     
-    centroids = AbstractVector{V}()
-    sizehint!(centroids, num_clusters)
+    centroids = Vector{V}()
+    sizehint!(centroids, k)
     push!(centroids, points[inital_index])
 
-
-    cur_distances = AbstractVector()
+    cur_distances = Float64[]
     sizehint!(cur_distances, length(points))
 
-
-    second_index = 1
-
-    max_dist = dist_func(points[0], centroids[0])
-
-    i = 1
-
-    while i < length(points)
-        dist = dist_func(points[i], centroids[0])
-        if dist > max_dist
-            second_index = i
-            max_dist = dist
-        end
-
-        push!(cur_distances, dist)
-
-        i+=1
+    # calc initial distances of all points to first centroid
+    for i in 1:length(points)
+        push!(cur_distances, dist_func(points[i], centroids[1]))
     end
 
-    push!(centroids, points[second_idex])
-
-
+    # find other centroids
     while length(centroids) < k
-        new_index = 0
-        max_dist = minimum!([dist_func(points[0], centroids[length(centroids) - 1]), cur_distance[0]])
-        cur_distance[0] = max_dist
-        i  = 2
-        while i < length(points)
-            dist = dist_func(points[0], centroids[length(centroids) - 1])
-            if dist < cur_distance[i]
+        # find point with max distance to its nearest centroid; this is new centroid
+        _, new_index = findmax(cur_distances)
+        push!(centroids, points[new_index])
+
+        # Update min distances to the new centroid
+        for i in 1:length(points)
+            dist = dist_func(points[i], centroids[end])
+            if dist < cur_distances[i]
                 cur_distances[i] = dist
             end
-
-            if cur_distances[i] > max_dist
-                max_dist = cur_distances[i]
-                new_index = i
-            end
-
-            i+=1
         end
-
-        push!(centroids, points[new_index])
     end
 
-    res = Vector{Int}()
+    res = Int[]
     sizehint!(res, length(points))
 
-    i = 1
-
-    while i < length(points)
-        push!(res, closet_point(points[i], centroids))
+    for i in 1:length(points)
+        push!(res, closest_point(points[i], centroids, dist_func))
     end
 
-
     endTime = time()
-    return ClusteringResult{Float64}(Int[], beginTime - endTime) 
+    return ClusteringResult{Float64}(res, endTime - beginTime)
 end
 
 
