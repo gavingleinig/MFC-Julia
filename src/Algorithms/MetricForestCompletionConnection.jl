@@ -1,12 +1,13 @@
 
-
-struct CompletionEdge
+using DataStructures
+struct CompletionEdge{T<:Real} 
     a::Int
     b::Int
     a_rep::Int
     b_rep::Int
-    weight::Float64
+    weight::T
 end
+
 
 function metric_forest_completion_Edges_approx_simple(
     points::AbstractVector{V},          # An array of type V representing data points
@@ -15,8 +16,9 @@ function metric_forest_completion_Edges_approx_simple(
 
     dist_func::F
 ) where {V, F<:Function}
-    unmapped_completion_edges = Vector{CompletionEdge}()
-    size_hint!(unmapped_completion_edges, cluster_count * (cluster_cout - 1))
+    T = Base.promote_op(dist_func, eltype(points), eltype(points))
+    unmapped_completion_edges = Vector{CompletionEdge{T}}()
+    # size_hint!(unmapped_completion_edges, cluster_count * (cluster_cout - 1))
 
     # Consider all clusters 
     for i in 1:cluster_count
@@ -46,7 +48,7 @@ function metric_forest_completion_Edges_approx_simple(
                     # 
                     # because: point_i_rep == points[global_indices_by_cluster[i][i_rep]]?
                     # So then: dist = dist_func(point_i_rep, points[point_j_idx])
-                if dist < current_completion_edges.weight
+                if dist < best_dist
                     best_dist = dist
                     best_a_rep = global_indices_by_cluster[i][i_rep] # = rep_idx_i
                     best_b_rep = point_j_idx
@@ -59,7 +61,7 @@ function metric_forest_completion_Edges_approx_simple(
                 # rep_idx_j = partition_j[1]
                 # point_j_rep = points[rep_idx_j]
                 # dist = dist_func(points[point_i_idx], point_j_rep)
-                if dist < current_completion_edges.weight
+                if dist < best_dist
                     best_dist = dist
                     best_a_rep = point_i_idx
                     best_b_rep = global_indices_by_cluster[i][i_rep] # = rep_idx_j

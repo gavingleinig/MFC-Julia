@@ -6,6 +6,9 @@ include("Algorithms/Clustering.jl")
 include("Algorithms/MetricForests.jl")
 include("Algorithms/MetricForestCompletionConnection.jl")
 include("Algorithms/MST.jl")
+include("Algorithms/MetricForestUtils.jl")
+include("Algorithms/SingleLinkage.jl")
+
 
 # From Metrics.jl
 export euclidean
