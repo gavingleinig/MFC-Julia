@@ -22,4 +22,7 @@ export ClusteringResult, k_centering
 # From MetricForests.jl
 export MFCResult, metric_forest_completion
 
+# From SingleLinkage.jl
+export single_linkage_threshold
+
 end # module MetricForestCompletion
