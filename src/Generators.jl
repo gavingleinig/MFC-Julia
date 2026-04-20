@@ -27,11 +27,9 @@ function generate_gaussians(
         # TODO: Setup standard normal distributions for this cluster_id w/ mean_range and sigma_range
         
         # First randimoly generate Mean for cluster
-        cluster_mean = (rand(g) * (mean_range[1] - mean_range[2] + 1)) + mean_range[1]
-
+        cluster_mean = (rand(g) * (mean_range[2] - mean_range[1] + 1)) + mean_range[1]
         # Next randimly genearte sigma for cluster
-        cluster_sigma = (rand(g) * (sigma_range[1] - sigma_range[2] + 1)) + sigma_range[1]
-
+        cluster_sigma = (rand(g) * (sigma_range[2] - sigma_range[1] + 1)) + sigma_range[1]
         # Finally create nomral distibution
         d = Normal(cluster_mean, cluster_sigma)
 
