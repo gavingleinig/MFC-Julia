@@ -4,6 +4,7 @@ include("Metrics.jl")
 include("Generators.jl")
 include("Algorithms/Clustering.jl")
 include("Algorithms/MetricForests.jl")
+include("Algorithms/MetricForestCompletionConnection.jl")
 include("Algorithms/MST.jl")
 
 # From Metrics.jl
