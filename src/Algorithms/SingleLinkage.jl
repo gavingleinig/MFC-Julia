@@ -94,10 +94,13 @@ function best_single_linkage_threshold(
 
     ari_max = 0
     best_threshold = single_linkage_threshold(edges, num_points, current)
+    
 
 
     while current < max[3]
         threshold_result = single_linkage_threshold(edges, num_points,current)
+        # There might be a better way to implement this so single_linkage_threshold doens't need to construct a new graph every loops
+        # Maybe investigate a union-find data structure
 
 
         ari = randindex(threshold_result.assignments, ground_truth)[1]

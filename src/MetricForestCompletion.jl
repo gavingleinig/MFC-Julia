@@ -26,7 +26,7 @@ export MFCResult, metric_forest_completion_approx, metric_forest_completion_opti
 export single_linkage_threshold, single_linkage_k_clusters, best_single_linkage_threshold
 
 # From MST.jl
-export mst_implicit
+export mst_implicit, naive_random_st
 
 # From MetricForestUtils.jl
 export convert_mst_to_weight
