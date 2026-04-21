@@ -13,10 +13,11 @@ end
 # helper functions
 
 function closest_point(
-    point::AbstractVector,
-    centroids::AbstractVector{V}, 
+    point,
+    centroids::AbstractVector, 
     dist_func::Function
-    )where {V<:AbstractVector}
+    )
+
     #find the closet point from the given point to a list of points
     res = 1
     dist = dist_func(point, centroids[1])
@@ -36,11 +37,11 @@ end
 # F <: Function: Specializes the compiler for the exact distance function provided
 # furtheset point function is never used so I am not including it
 function k_centering(
-    points::AbstractVector{V}, 
+    points::AbstractVector, 
     k::Int,
     initial_index::Int,
     dist_func::F
-) where {V<:AbstractVector, F<:Function}
+) where {F<:Function}
     beginTime = time()
 
     if length(points) < k
@@ -52,7 +53,7 @@ function k_centering(
     end
 
     
-    centroids = Vector{V}()
+    centroids = Vector{eltype(points)}()
     sizehint!(centroids, k)
     push!(centroids, points[initial_index])
 

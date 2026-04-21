@@ -54,7 +54,7 @@ function run_gaussian_test()
     target_k = num_clusters
 
     # Compute Optimal MST
-    mst_edges = mst_implicit(points, dist_func)
+    t_mst_compute = @elapsed mst_edges = mst_implicit(points, dist_func)
     mst_complete = convert_mst_to_weight(mst_edges)
     # mst_result = single_linkage_threshold(mst_complete, num_points, threshold)
 
@@ -80,6 +80,8 @@ function run_gaussian_test()
     println("Data Type:           ", eltype(eltype(points)))
     println("Points Generated:    ", floor(num_points ÷ num_gauss) * num_gauss)
     println("Cluster Edges Found: ", length(mfc_approx_result.cluster_edges))
+
+    println("Optimal MST Computation:             ", round(t_mst_compute, digits=4), " seconds")
 
     println("\n### MFC Runtimes ###")
     println("Initial Clustering:                  ", round(clustering_result.runtime, digits=4), " seconds")

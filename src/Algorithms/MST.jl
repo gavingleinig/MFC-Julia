@@ -49,7 +49,7 @@ function mst_implicit(points::AbstractVector{V}, dist_func::F) where {V, F}
             push!(edges, WeightedEdge(w, i, j))
         end
         
-        if length(edges) > 10_000_000 # Batch threshold 
+        if length(edges) > 50_000_000 # Batch threshold 
             # Compute MST and prune
             edges = mst!(n, edges)
         end

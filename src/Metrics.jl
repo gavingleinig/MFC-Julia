@@ -17,3 +17,15 @@ function euclidean(a::AbstractVector{T}, b::AbstractVector{T}) where {T<:Real}
     # return zero(T) 
     return distance
 end
+
+function jaccard(a::Set{Int}, b::Set{Int})
+    union_set = union(a, b)
+    union_size = length(union_set)
+    
+    if union_size == 0
+        return 1.0
+    end
+    
+    intersection_size = length(intersect(a, b))
+    return 1.0 - (intersection_size / union_size)
+end
