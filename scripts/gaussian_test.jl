@@ -6,7 +6,7 @@ function run_gaussian_test()
     # Setup Params
     PrecisionType = Float64
     
-    dim = 2
+    dim = 32
     num_gauss = 16
     points_per_gauss = 62
     num_clusters = 16 
@@ -57,8 +57,15 @@ function run_gaussian_test()
     println("Unique Clusters:    ", length(unique(threshold_result.assignments)))
 
     # Another option; Target k clusters
-    # target_k = clusters
-    # k_result = single_linkage_k_clusters(all_ST_edges, num_points, target_k)
+    target_k = num_clusters
+    k_result = single_linkage_k_clusters(all_ST_edges, num_points, target_k)
+
+
+    # compute MST
+    mst_edges = mst_implicit(points, dist_func)
+    mst_complete = convert_mst_to_weight(mst_edges)
+    mst_result = single_linkage_threshold(mst_complete, num_points, threshold)
+
 
     ### Evaluation ###
     println("Initial K-Centering:")
@@ -70,6 +77,18 @@ function run_gaussian_test()
     println("\nMFC Single Linkage (Threshold):")
     mfc_ari = randindex(threshold_result.assignments, ground_truth)[1]
     mfc_nmi = mutualinfo(threshold_result.assignments, ground_truth, normed=true)
+    println("ARI:", round(mfc_ari, digits=4))
+    println("NMI:", round(mfc_nmi, digits=4))
+
+    println("\nMST Single Linkage (Threshold):")
+    mfc_ari = randindex(mst_result.assignments, ground_truth)[1]
+    mfc_nmi = mutualinfo(mst_result.assignments, ground_truth, normed=true)
+    println("ARI:", round(mfc_ari, digits=4))
+    println("NMI:", round(mfc_nmi, digits=4))
+
+    println("\nMFC Single Linkage (k linkage): ",target_k)
+    mfc_ari = randindex(k_result.assignments, ground_truth)[1]
+    mfc_nmi = mutualinfo(k_result.assignments, ground_truth, normed=true)
     println("ARI:", round(mfc_ari, digits=4))
     println("NMI:", round(mfc_nmi, digits=4))
 

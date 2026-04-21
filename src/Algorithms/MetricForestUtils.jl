@@ -12,3 +12,17 @@ function convert_completion_to_weight(unmapped_completion_edges::Vector{Completi
     return completion_edges
 
 end
+
+
+function convert_mst_to_weight(MST_edges::Vector{WeightedEdge{T}})where T
+    completion_edges = Vector{Tuple{Int, Int, Float64}}()
+    for e in MST_edges
+        push!(completion_edges, (e.a,e.b,e.weight))
+    end
+
+
+
+    return completion_edges
+
+end
+
