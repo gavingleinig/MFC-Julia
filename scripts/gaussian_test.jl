@@ -6,7 +6,7 @@ function run_gaussian_test()
     # Setup Params
     PrecisionType = Float64
     
-    dim = 32
+    dim = 8
     num_gauss = 16
     points_per_gauss = 62
     num_clusters = 16 
