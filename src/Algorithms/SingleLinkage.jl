@@ -1,4 +1,5 @@
 using Graphs
+using Clustering
 # Could also do this w/o Graphs package using a Disjoint Set data structure?
 
 # Helper fctn to convert a list of connected components into a flat assignments array
@@ -64,4 +65,52 @@ function single_linkage_k_clusters(
     assignments = components_to_assignments(comps, num_points)
     
     return ClusteringResult{Float64}(assignments, time() - start_time)
+end
+
+function best_single_linkage_threshold(
+    edges::Vector{Tuple{Int, Int, Float64}}, 
+    num_points::Int,
+    ground_truth::AbstractVector{Int64},
+    increment::Float64
+)
+    max = edges[1]
+    min = edges[1]
+
+    for e in edges
+        weight = e[3]
+
+        if max[3] < weight
+            max = e
+        end
+
+        if min[3] > weight
+            min = e
+        end
+    end
+
+    
+    current = min[3]
+
+
+    rdi_max = 0
+    best_threshold = single_linkage_threshold(edges, num_points, current)
+
+
+    while current < max[3]
+        thereshold_result = single_linkage_threshold(edges, num_points,current)
+
+
+        rdi = randindex(thereshold_result.assignments, ground_truth)[1]
+        if rdi_max < rdi
+            rdi_max = rdi
+            best_threshold = thereshold_result
+        end
+
+        
+
+
+        current += increment
+    end
+
+    return (best_threshold, rdi_max)
 end

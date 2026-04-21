@@ -23,7 +23,7 @@ export ClusteringResult, k_centering
 export MFCResult, metric_forest_completion
 
 # From SingleLinkage.jl
-export single_linkage_threshold, single_linkage_k_clusters
+export single_linkage_threshold, single_linkage_k_clusters, best_single_linkage_threshold
 
 # From MST.jl
 export mst_implicit

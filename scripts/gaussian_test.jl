@@ -66,6 +66,9 @@ function run_gaussian_test()
     mst_complete = convert_mst_to_weight(mst_edges)
     mst_result = single_linkage_threshold(mst_complete, num_points, threshold)
 
+    # compute best threshold 
+
+    best_result, max_rdi = best_single_linkage_threshold(all_ST_edges, num_points, ground_truth,1.0)
 
     ### Evaluation ###
     println("Initial K-Centering:")
@@ -89,6 +92,12 @@ function run_gaussian_test()
     println("\nMFC Single Linkage (k linkage): ",target_k)
     mfc_ari = randindex(k_result.assignments, ground_truth)[1]
     mfc_nmi = mutualinfo(k_result.assignments, ground_truth, normed=true)
+    println("ARI:", round(mfc_ari, digits=4))
+    println("NMI:", round(mfc_nmi, digits=4))
+
+    println("\nMFC Single Linkage (Best Threashold):")
+    mfc_ari = max_rdi
+    mfc_nmi = mutualinfo(best_result.assignments, ground_truth, normed=true)
     println("ARI:", round(mfc_ari, digits=4))
     println("NMI:", round(mfc_nmi, digits=4))
 
