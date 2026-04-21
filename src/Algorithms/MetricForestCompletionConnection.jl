@@ -78,3 +78,102 @@ function metric_forest_completion_Edges_approx_simple(
     return unmapped_completion_edges
     # Choose
 end
+
+
+function metric_forest_completion_edges_optimal(
+    points::AbstractVector{V},          # An array of type V representing data points
+    cluster_count::Int,                 # The total number of clusters the data was divided into initial clustering
+    global_indices_by_cluster::Vector{Vector{Int}},  
+
+    dist_func::F
+) where {V, F<:Function}
+    T = Base.promote_op(dist_func, eltype(points), eltype(points))
+    unmapped_completion_edges = Vector{CompletionEdge{T}}()
+
+    # Consider all clusters 
+    for cluster_i in 1:cluster_count
+        partition_i = global_indices_by_cluster[i]
+
+        for cluster_j in (i+i):cluster_count
+            partition_j = global_indices_by_cluster[j]
+
+            if length(partition_i) == 0 || length(partition_j) == 0
+                continue
+            end
+
+            # For simple we wil use first node in cluster for our repersentives
+            i_rep = 1
+            j_rep = 1
+
+            best_dist = Inf
+            best_a_rep = -1
+            best_b_rep = -1
+
+            for i in 1:length!(global_indices_by_cluster[i])
+                for j in 1:length!(global_indices_by_cluster[j])
+                    a_rep = global_indices_by_cluster[cluster_i][i]
+                    b_rep = global_indices_by_cluster[cluster_j][j]
+                    dist = dist_func(points[a_rep],points[b_rep])
+                    if best_dist > dist
+                        best_dist = dist
+
+                        best_a_rep = a_rep
+                        best_b_rep = b_rep
+                    end
+                end
+            end
+
+           
+
+            push!(
+                unmapped_completion_edges, 
+                CompletionEdge(i, j, best_a_rep, best_b_rep, best_dist)
+            )
+        end 
+    end
+
+    return unmapped_completion_edges
+
+
+end
+
+function metric_forest_completion_edges_random_connection(
+    points::AbstractVector{V},          # An array of type V representing data points
+    cluster_count::Int,                 # The total number of clusters the data was divided into initial clustering
+    global_indices_by_cluster::Vector{Vector{Int}},  
+
+    dist_func::F
+) where {V, F<:Function}
+    T = Base.promote_op(dist_func, eltype(points), eltype(points))
+    unmapped_completion_edges = Vector{CompletionEdge{T}}()
+
+    # Consider all clusters 
+    for i in 1:cluster_count
+        partition_i = global_indices_by_cluster[i]
+
+        for j in (i+i):cluster_count
+            partition_j = global_indices_by_cluster[j]
+
+            if length(partition_i) == 0 || length(partition_j) == 0
+                continue
+            end
+
+            # For simple we wil use first node in cluster for our repersentives
+            i_rep = 1
+            j_rep = 1
+
+            dist = dist_func(points[global_indices_by_cluster[i][i_rep]],points[global_indices_by_cluster[j][j_rep]])
+
+            
+
+            push!(
+                unmapped_completion_edges, 
+                CompletionEdge(i, j, i_rep, j_rep, dist)
+            )
+        end 
+    end
+
+    return unmapped_completion_edges
+
+
+end
