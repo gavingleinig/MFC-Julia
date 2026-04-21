@@ -13,10 +13,10 @@ function components_to_assignments(components::Vector{Vector{Int}}, num_points::
 end
 
 function single_linkage_threshold(
-    edges::Vector{Tuple{Int, Int, Float64}}, 
+    edges::Vector{Tuple{Int, Int, T}}, 
     num_points::Int, 
-    threshold::Float64
-)
+    threshold::T
+) where T<:Real
     start_time = time()
     
     # Create an empty graph with num_points vertices and 0 edges
@@ -37,10 +37,10 @@ function single_linkage_threshold(
 end
 
 function single_linkage_k_clusters(
-    edges::Vector{Tuple{Int, Int, Float64}}, 
+    edges::Vector{Tuple{Int, Int, T}}, 
     num_points::Int, 
     k::Int
-)
+) where T<:Real
     start_time = time()
     
     # Sort edges by weight, ascending

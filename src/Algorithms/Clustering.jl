@@ -13,10 +13,10 @@ end
 # helper functions
 
 function closest_point(
-    point, 
-    centroids::V, 
-    dist_func::F
-    )where {V<:AbstractVector, F<:Function} 
+    point::AbstractVector,
+    centroids::AbstractVector{V}, 
+    dist_func::Function
+    )where {V<:AbstractVector}
     #find the closet point from the given point to a list of points
     res = 1
     dist = dist_func(point, centroids[1])

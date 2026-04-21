@@ -1,8 +1,8 @@
 # src/Algorithms/MetricForests.jl
 
-struct MFCResult
-    cluster_edges::Vector{Tuple{Int, Int, Float64}}     # tuples representing the edges that form the MST within each local cluster
-    completion_edges::Vector{Tuple{Int, Int, Float64}}   # tuples representing the edges that bridge the separate clusters
+struct MFCResult{T}
+    cluster_edges::Vector{Tuple{Int, Int, T}}     # tuples representing the edges that form the MST within each local cluster
+    completion_edges::Vector{Tuple{Int, Int, T}}   # tuples representing the edges that bridge the separate clusters
     sub_cluster_runtime::Float64                # time (in seconds) taken to compute the local cluster MSTs
     completion_edges_runtime::Float64           # time (in seconds) taken to find the connecting edges
     completion_runtime::Float64                 # total runtime of the MFC algorithm
@@ -17,8 +17,9 @@ function metric_forest_completion(
     
     total_start_time = time()
     
-    cluster_edges = Tuple{Int, Int, Float64}[]
-    completion_edges = Tuple{Int, Int, Float64}[]
+    T = Base.promote_op(dist_func, eltype(points), eltype(points))
+    cluster_edges = Tuple{Int, Int, T}[]
+    completion_edges = Tuple{Int, Int, T}[]
     
     ### MST Each Cluster ###
     sub_cluster_start = time()
@@ -52,7 +53,7 @@ function metric_forest_completion(
         for edge in local_mst_edges
             global_a = current_cluster_indices[edge.a]
             global_b = current_cluster_indices[edge.b]
-            edge_weight = Float64(edge.weight)
+            edge_weight = edge.weight
             push!(cluster_edges, (global_a, global_b, edge_weight))
         end
     end
