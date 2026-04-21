@@ -20,7 +20,7 @@ export generate_gaussians
 export ClusteringResult, k_centering
 
 # From MetricForests.jl
-export MFCResult, metric_forest_completion
+export MFCResult, metric_forest_completion_approx, metric_forest_completion_optimal, metric_forest_completion_simple
 
 # From SingleLinkage.jl
 export single_linkage_threshold, single_linkage_k_clusters, best_single_linkage_threshold
