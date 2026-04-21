@@ -8,7 +8,7 @@ function run_gaussian_test()
     
     dim = 8
     num_gauss = 16
-    points_per_gauss = 62
+    points_per_gauss = 1000
     num_clusters = 16 
     
     # Distance Metric
@@ -20,8 +20,8 @@ function run_gaussian_test()
         dim = dim, 
         num_centers = num_gauss, 
         points_per_center = points_per_gauss,
-        mean_range = (PrecisionType(-100.0), PrecisionType(100.0)),
-        sigma_range = (PrecisionType(0.5), PrecisionType(0.8))
+        mean_range = (PrecisionType(-100.0), PrecisionType(1000.0)),
+        sigma_range = (PrecisionType(2), PrecisionType(5))
     )
 
     # Initial Clustering
