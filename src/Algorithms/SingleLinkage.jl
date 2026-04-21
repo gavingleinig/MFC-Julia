@@ -97,13 +97,13 @@ function best_single_linkage_threshold(
 
 
     while current < max[3]
-        thereshold_result = single_linkage_threshold(edges, num_points,current)
+        threshold_result = single_linkage_threshold(edges, num_points,current)
 
 
-        rdi = randindex(thereshold_result.assignments, ground_truth)[1]
+        rdi = randindex(threshold_result.assignments, ground_truth)[1]
         if rdi_max < rdi
             rdi_max = rdi
-            best_threshold = thereshold_result
+            best_threshold = threshold_result
         end
 
         

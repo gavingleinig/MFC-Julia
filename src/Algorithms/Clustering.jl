@@ -38,7 +38,7 @@ end
 function k_centering(
     points::AbstractVector{V}, 
     k::Int,
-    inital_index::Int,
+    initial_index::Int,
     dist_func::F
 ) where {V<:AbstractVector, F<:Function}
     beginTime = time()
@@ -54,7 +54,7 @@ function k_centering(
     
     centroids = Vector{V}()
     sizehint!(centroids, k)
-    push!(centroids, points[inital_index])
+    push!(centroids, points[initial_index])
 
     cur_distances = Float64[]
     sizehint!(cur_distances, length(points))

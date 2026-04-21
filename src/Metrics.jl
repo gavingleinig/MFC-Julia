@@ -8,7 +8,7 @@ function euclidean(a::AbstractVector{T}, b::AbstractVector{T}) where {T<:Real}
     i = 1
     distance = 0
 
-    while  i < length(a)
+    while  i <= length(a)
         distance += (a[i] - b[i])^2
         i+=1
     end
