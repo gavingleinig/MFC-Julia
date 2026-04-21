@@ -4,7 +4,7 @@
 # we can further use diffrent clustering algorithems to see if we increase effincancy
 #using()
 
-struct ClusteringResult{T<:AbstractFloat}
+struct ClusteringResult{T<:Real}
     assignments::Vector{Int}
     runtime::T
 end
@@ -48,7 +48,7 @@ function k_centering(
     end
     
     if k <= 1
-        return ClusteringResult{Float64}(ones(Int, length(points)), 0.0)
+        return ClusteringResult(ones(Int, length(points)), 0.0)
     end
 
     
@@ -87,7 +87,7 @@ function k_centering(
     end
 
     endTime = time()
-    return ClusteringResult{Float64}(res, endTime - beginTime)
+    return ClusteringResult(res, endTime - beginTime)
 end
 
 
