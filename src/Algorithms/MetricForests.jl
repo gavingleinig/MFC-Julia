@@ -144,7 +144,7 @@ function metric_forest_completion_optimal(
     unmapped_completion_edges = mst_complete!(cluster_count, unmapped_completion_edges)
 
     completion_edges_runtime = time() - completion_edges_start
-    completion_edges = metric_forest_completion_edges_optimal(unmapped_completion_edges)
+    completion_edges = convert_completion_to_weight(unmapped_completion_edges)
 
     
     total_runtime = time() - total_start_time
@@ -220,7 +220,7 @@ function metric_forest_completion_simple(
     unmapped_completion_edges = mst_complete!(cluster_count, unmapped_completion_edges)
 
     completion_edges_runtime = time() - completion_edges_start
-    completion_edges = metric_forest_completion_edges_optimal(unmapped_completion_edges)
+    completion_edges = convert_completion_to_weight(unmapped_completion_edges)
 
     
     total_runtime = time() - total_start_time
