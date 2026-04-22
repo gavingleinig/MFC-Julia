@@ -1,0 +1,17 @@
+Loaded 39774 sets from cooking dataset.
+Optimal MST Computation:             914.5029 seconds
+
+### MFC Runtimes ###
+Initial Clustering:                  1.23 seconds
+
+MFC Approx Sub-cluster Runtime:      129.944 seconds
+MFC Approx Completion Edges Runtime: 0.376 seconds
+MFC Approx Total Runtime:            130.32 seconds
+
+MFC Optimal Sub-cluster Runtime:     126.825 seconds
+MFC Optimal Completion Edges Runtime:0.381 seconds
+MFC Optimal Total Runtime:           127.206 seconds
+
+MFC Simple Sub-cluster Runtime:      136.888 seconds
+MFC Simple Completion Edges Runtime: 0.0 seconds
+MFC Simple Total Runtime:            136.888 seconds
