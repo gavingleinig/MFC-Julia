@@ -35,6 +35,9 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector)
         # Initial Clustering
         clustering_result = k_centering(points, num_clusters, 1, dist_func)
 
+        points_matrix = stack(points) # put points into 2D vector
+        kmeans_result = kmeans(points_matrix, num_clusters)
+
         # MFC Variants
         mfc_approx_result = metric_forest_completion_approx(points, num_clusters, clustering_result.assignments, dist_func)
         mfc_optimal_result = metric_forest_completion_optimal(points, num_clusters, clustering_result.assignments, dist_func)
@@ -51,14 +54,17 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector)
         mst_complete = convert_mst_to_weight(mst_implicit(points, dist_func))
         naive_st_complete = convert_mst_to_weight(naive_random_st(points, dist_func))
 
-        best_mst, mst_ari         = best_single_linkage_threshold(mst_complete, n_pts, ground_truth, 1.0)
-        best_naive, naive_ari     = best_single_linkage_threshold(naive_st_complete, n_pts, ground_truth, 1.0)
-        best_approx, approx_ari   = best_single_linkage_threshold(all_ST_approx_edges, n_pts, ground_truth, 1.0)
-        best_optimal, optimal_ari = best_single_linkage_threshold(all_ST_optimal_edges, n_pts, ground_truth, 1.0)
-        best_simple, simple_ari   = best_single_linkage_threshold(all_ST_simple_edges, n_pts, ground_truth, 1.0)
+        best_mst, mst_ari         = best_single_linkage_threshold(mst_complete, n_pts, ground_truth, 0.01)
+        best_naive, naive_ari     = best_single_linkage_threshold(naive_st_complete, n_pts, ground_truth, 0.01)
+        best_approx, approx_ari   = best_single_linkage_threshold(all_ST_approx_edges, n_pts, ground_truth, 0.01)
+        best_optimal, optimal_ari = best_single_linkage_threshold(all_ST_optimal_edges, n_pts, ground_truth, 0.01)
+        best_simple, simple_ari   = best_single_linkage_threshold(all_ST_simple_edges, n_pts, ground_truth, 0.01)
 
         push!(results, (
             Sigma           = sigma,
+
+            KMeans_ARI      = randindex(kmeans_result.assignments, ground_truth)[1],
+            KMeans_NMI      = mutualinfo(kmeans_result.assignments, ground_truth, normed=true),
 
             KC_ARI          = randindex(clustering_result.assignments, ground_truth)[1],
             KC_NMI          = mutualinfo(clustering_result.assignments, ground_truth, normed=true),
