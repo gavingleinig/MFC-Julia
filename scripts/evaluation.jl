@@ -54,11 +54,11 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector)
         mst_complete = convert_mst_to_weight(mst_implicit(points, dist_func))
         naive_st_complete = convert_mst_to_weight(naive_random_st(points, dist_func))
 
-        best_mst, mst_ari         = best_single_linkage_threshold(mst_complete, n_pts, ground_truth, 1.0)
-        best_naive, naive_ari     = best_single_linkage_threshold(naive_st_complete, n_pts, ground_truth, 1.0)
-        best_approx, approx_ari   = best_single_linkage_threshold(all_ST_approx_edges, n_pts, ground_truth, 1.0)
-        best_optimal, optimal_ari = best_single_linkage_threshold(all_ST_optimal_edges, n_pts, ground_truth, 1.0)
-        best_simple, simple_ari   = best_single_linkage_threshold(all_ST_simple_edges, n_pts, ground_truth, 1.0)
+        best_mst, mst_ari         = best_single_linkage_threshold(mst_complete, n_pts, ground_truth, 0.01)
+        best_naive, naive_ari     = best_single_linkage_threshold(naive_st_complete, n_pts, ground_truth, 0.01)
+        best_approx, approx_ari   = best_single_linkage_threshold(all_ST_approx_edges, n_pts, ground_truth, 0.01)
+        best_optimal, optimal_ari = best_single_linkage_threshold(all_ST_optimal_edges, n_pts, ground_truth, 0.01)
+        best_simple, simple_ari   = best_single_linkage_threshold(all_ST_simple_edges, n_pts, ground_truth, 0.01)
 
         push!(results, (
             Sigma           = sigma,
