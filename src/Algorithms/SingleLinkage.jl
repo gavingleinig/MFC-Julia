@@ -67,7 +67,7 @@ function single_linkage_k_clusters(
     return ClusteringResult{Float64}(assignments, time() - start_time)
 end
 
-function best_single_linkage_threshold(
+function best_single_linkage_threshold_increment(
     edges::Vector{Tuple{Int, Int, Float64}}, 
     num_points::Int,
     ground_truth::AbstractVector{Int64},
@@ -113,6 +113,31 @@ function best_single_linkage_threshold(
 
 
         current += increment
+    end
+
+    return (best_threshold, ari_max)
+end
+
+function best_single_linkage_threshold(
+    edges::Vector{Tuple{Int, Int, Float64}}, 
+    num_points::Int,
+    ground_truth::AbstractVector{Int64}
+)
+    ari_max = 0
+    best_threshold = ClusteringResult{Float64}(Vector{Int}(undef, 0),0.0)
+    for e in edges
+        weight = e[3]
+
+        threshold_result = single_linkage_threshold(edges, num_points,weight)
+        # There might be a better way to implement this so single_linkage_threshold doens't need to construct a new graph every loops
+        # Maybe investigate a union-find data structure
+
+
+        ari = randindex(threshold_result.assignments, ground_truth)[1]
+        if ari_max < ari
+            ari_max = ari
+            best_threshold = threshold_result
+        end
     end
 
     return (best_threshold, ari_max)
