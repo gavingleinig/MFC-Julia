@@ -18,7 +18,7 @@ function euclidean(a::AbstractVector{T}, b::AbstractVector{T}) where {T<:Real}
     return distance
 end
 
-function jaccard(a::Set{Int}, b::Set{Int})
+function jaccard(a::AbstractVector{Int}, b::AbstractVector{Int})
     union_set = union(a, b)
     union_size = length(union_set)
     
