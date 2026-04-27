@@ -34,7 +34,7 @@ end
 
 function plot_matrix_nmi(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int64}, dim::Vector{Int64})
     l = @layout [grid(length(dim), length(gausin))
-             b{0.1h}] 
+             b{0.05h}] 
     final_plot = plot(
         layout=l,
         xlabel ="",
@@ -47,7 +47,7 @@ function plot_matrix_nmi(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int
         ytickfontsize=4,
         yticks=0:0.25:1,
         ylims=(0, 1),
-        titlefontsize=5
+        titlefontsize=4
 
         )
     println(typeof(final_plot))
@@ -61,15 +61,23 @@ function plot_matrix_nmi(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int
                 label = "Sigma"
             end
 
-            if j == 1
-                label = string("dim: ",dim_num)
-
-            end
-
             if i == 1
-                gausin_label = string("Gausins: ",gausin_num)
+                gausin_label = string("Gaussians: ",gausin_num,"\n")
 
             end
+            if j == round(length(gausin)/2)
+                gausin_label = string("Uniform Random Pontis d=",dim_num)
+                if i == 1
+                    gausin_label = string("Gaussians: ",gausin_num,"\nUniform Random Pontis d=",dim_num)
+                end
+
+                
+                
+            end
+
+        
+
+            
 
 
             println("Testing subplot: ", j+((i-1)*length(gausin)))
@@ -84,11 +92,11 @@ function plot_matrix_nmi(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int
 
     # add ledger 
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Centering", marker = :circle,    legend = :inside,legendfontsize = 3, legend_column = 7, legendframestyle = :none, framestyle = :none, axis = false, grid = false)
-    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Optimal MST", marker = :square,    legend = :inside)
-    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
+    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Optimal MST", marker = :square,    legend = :inside)
+    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Approx",  marker = :diamond,   legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Optimal", marker = :star5,     legend = :inside)
-    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Simple",  marker = :cross,     legend = :inside)
+    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Simple",  marker = :cross,     legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Means",     marker = :xcross,    legend = :inside)
     display(final_plot)
 
@@ -142,11 +150,11 @@ function plot_matrix_ari(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int
 
     # add ledger 
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Centering", marker = :circle,    legend = :inside,legendfontsize = 3, legend_column = 7, legendframestyle = :none, framestyle = :none, axis = false, grid = false)
-    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Optimal MST", marker = :square,    legend = :inside)
-    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
+    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Optimal MST", marker = :square,    legend = :inside)
+    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Approx",  marker = :diamond,   legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Optimal", marker = :star5,     legend = :inside)
-    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Simple",  marker = :cross,     legend = :inside)
+    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Simple",  marker = :cross,     legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Means",     marker = :xcross,    legend = :inside)
     display(final_plot)
 
@@ -167,11 +175,11 @@ function plot_dataframe_nmi(df::DataFrame,plots,j,label,gausin_label)
     # NMI
     
     plot!(plots, sigmas,markersize = 2,  df.KC_NMI, marker=:circle, lw=1,  subplot=j, xlabel =label, title=gausin_label )
-    plot!(plots, sigmas,markersize = 2,  df.MST_NMI, marker=:square, lw=1, subplot=j)
-    plot!(plots, sigmas,markersize = 2,  df.Naive_NMI, marker=:dtriangle, lw=1, subplot=j)
+    # plot!(plots, sigmas,markersize = 2,  df.MST_NMI, marker=:square, lw=1, subplot=j)
+    # plot!(plots, sigmas,markersize = 2,  df.Naive_NMI, marker=:dtriangle, lw=1, subplot=j)
     plot!(plots, sigmas,markersize = 2,  df.MFC_Approx_NMI, marker=:diamond, lw=1, subplot=j)
     plot!(plots, sigmas,markersize = 2,  df.MFC_Optimal_NMI, marker=:star5, lw=1, subplot=j)
-    plot!(plots, sigmas,markersize = 2,  df.MFC_Simple_NMI, marker=:cross, lw=1, subplot=j)
+    # plot!(plots, sigmas,markersize = 2,  df.MFC_Simple_NMI, marker=:cross, lw=1, subplot=j)
     plot!(plots, sigmas,markersize = 2,  df.KMeans_NMI, marker=:xcross, lw=1, subplot=j)
 
 
@@ -204,7 +212,7 @@ function plot_dataframe_ari(df::DataFrame,plots,j,label)
 end
 
 
-gausin = [16,32,64,128]
+gausin = [16,64,256]
 dim = [4,16,64,128]
 
 df_matrix  = load_matrix(gausin,dim)
