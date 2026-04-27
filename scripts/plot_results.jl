@@ -31,13 +31,13 @@ function plot_clustering_results(df::DataFrame)
         grid = true
     )
     
-    plot!(p_nmi, sigmas, df.KC_NMI, label="K-Centering", marker=:circle, lw=2)
-    plot!(p_nmi, sigmas, df.MST_NMI, label="Optimal MST", marker=:square, lw=2)
-    plot!(p_nmi, sigmas, df.Naive_NMI, label="Naive ST", marker=:dtriangle, lw=2)
-    plot!(p_nmi, sigmas, df.MFC_Approx_NMI, label="MFC Approx", marker=:diamond, lw=2)
-    plot!(p_nmi, sigmas, df.MFC_Optimal_NMI, label="MFC Optimal", marker=:star5, lw=2)
-    plot!(p_nmi, sigmas, df.MFC_Simple_NMI, label="MFC Simple", marker=:cross, lw=2)
-    plot!(p_nmi, sigmas, df.KMeans_NMI, label="K-Means", marker=:xcross, lw=2)
+    plot!(p_nmi, sigmas, markersize=1, df.KC_NMI, label="K-Centering", marker=:circle, lw=2)
+    plot!(p_nmi, sigmas, markersize=1, df.MST_NMI, label="Optimal MST", marker=:square, lw=2)
+    plot!(p_nmi, sigmas, markersize=1, df.Naive_NMI, label="Naive ST", marker=:dtriangle, lw=2)
+    plot!(p_nmi, sigmas, markersize=1, df.MFC_Approx_NMI, label="MFC Approx", marker=:diamond, lw=2)
+    plot!(p_nmi, sigmas, markersize=1, df.MFC_Optimal_NMI, label="MFC Optimal", marker=:star5, lw=2)
+    plot!(p_nmi, sigmas, markersize=1, df.MFC_Simple_NMI, label="MFC Simple", marker=:cross, lw=2)
+    plot!(p_nmi, sigmas, markersize=1, df.KMeans_NMI, label="K-Means", marker=:xcross, lw=2)
 
 
     final_plot = plot(p_ari, p_nmi, layout=(1, 2), size=(1000, 450), margin=5Plots.mm)

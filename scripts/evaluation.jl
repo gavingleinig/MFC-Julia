@@ -4,14 +4,14 @@ using Clustering
 using DataFrames
 using CSV
 
-function run_gaussian_sigma_sweep(sigma_values::AbstractVector)
+function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_gauss::Int64,CSV_label::String )
     # Setup Params
     PrecisionType = Float64
     
-    dim = 8
-    num_gauss = 32
+    dim = in_dim
+    num_gauss = in_gauss
     num_points = 20000
-    num_clusters = 16 
+    num_clusters = in_gauss 
     
     # Distance Metric
     dist_func = euclidean 
@@ -95,7 +95,7 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector)
     println(df)
 
     # Save to CSV
-    output_file = "clustering_results.csv"
+    output_file = CSV_label
 
     CSV.write(output_file, df)
     println("\nResults saved to $output_file")
@@ -103,5 +103,5 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector)
     return df
 end
 
-sigmas_to_test = 0.1:0.2:1.5
-df_results = run_gaussian_sigma_sweep(sigmas_to_test)
+# sigmas_to_test = 0.1:0.2:1.5
+# df_results = run_gaussian_sigma_sweep(sigmas_to_test,8,32,"clustering_results.csv")
