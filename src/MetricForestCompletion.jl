@@ -11,7 +11,7 @@ include("Algorithms/SingleLinkage.jl")
 
 
 # From Metrics.jl
-export euclidean, jaccard
+export euclidean, jaccard, hamming
 
 # From Generators.jl
 export generate_gaussians
