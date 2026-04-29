@@ -4,14 +4,14 @@ using Clustering
 
 function run_genes_test(file_path::String, ground_truth_file_path::String)
 
-    num_clusters = 67
+    num_clusters = 153
     dist_func = hamming
 
     points = String[]
     ground_truth = Int[]
     edge_size_filter = 0 # Potentially filter out small sets
     
-    target_level = 5 # 1=Kingdom, 2=Phylum, ..., 5=Family, 7=Species
+    target_level = 3 # 1=Kingdom, 2=Phylum, ..., 5=Family, 7=Species
 
     open(file_path, "r") do f_data
         open(ground_truth_file_path, "r") do f_labels
@@ -52,16 +52,15 @@ function run_genes_test(file_path::String, ground_truth_file_path::String)
     all_ST_optimal_edges = vcat(mfc_optimal_result.cluster_edges, mfc_optimal_result.completion_edges)
     all_ST_simple_edges  = vcat(mfc_simple_result.cluster_edges, mfc_simple_result.completion_edges)
     
-    # Calcualte gamma-overlap
-    initial_forest_complete = convert_mst_to_weight(mfc_approx_result.cluster_edges)
+    t_mst_compute = @elapsed mst_edges = mst_implicit(points, dist_func)
+    mst_complete = convert_mst_to_weight(mst_edges)
+
+    initial_forest_complete = mfc_approx_result.cluster_edges
     gamma_overlap = compute_gamma_overlap(
         initial_forest_complete, 
         mst_complete, 
         clustering_result.assignments
     )
-
-    t_mst_compute = @elapsed mst_edges = mst_implicit(points, dist_func)
-    mst_complete = convert_mst_to_weight(mst_edges)
 
     naive_st_edges = naive_random_st(points, dist_func)
     naive_st_complete = convert_mst_to_weight(naive_st_edges)
@@ -136,4 +135,4 @@ function run_genes_test(file_path::String, ground_truth_file_path::String)
     println("NMI: ", round(mfc_best_simple_nmi, digits=4))
 end
 
-run_genes_test("data/Genes/gg_13_5_ssualign_filtered_3000.txt", "data/Genes/gg_13_5_labels_all_3000.csv")
+run_genes_test("data/Genes/gg_13_5_ssualign_filtered_30000.txt", "data/Genes/gg_13_5_labels_all_30000.csv")

@@ -10,7 +10,7 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
     
     dim = in_dim
     num_gauss = in_gauss
-    num_points = 20000
+    num_points = 2000
     num_clusters = in_gauss 
     
     # Distance Metric
@@ -59,6 +59,13 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         mst_runtime      = @elapsed mst_complete  = convert_mst_to_weight(mst_implicit(points, dist_func))
         naive_st_runtime = @elapsed naive_st_complete = convert_mst_to_weight(naive_random_st(points, dist_func))
 
+        
+        gamma_overlap = compute_gamma_overlap(
+            mfc_approx_result.cluster_edges, 
+            mst_complete, 
+            clustering_result.assignments
+        )
+
         mst_single_link_runtime     = @elapsed best_mst, mst_ari         = best_single_linkage_threshold_increment(mst_complete, n_pts, ground_truth,0.01 )
         naive_single_link_runtime   = @elapsed best_naive, naive_ari     = best_single_linkage_threshold_increment(naive_st_complete, n_pts, ground_truth,0.01 )
         approx_single_link_runtime  = @elapsed best_approx, approx_ari   = best_single_linkage_threshold_increment(all_ST_approx_edges, n_pts, ground_truth,0.01 )
@@ -86,6 +93,8 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         # Clustering results
         push!(results, (
             Sigma           = sigma,
+
+            Gamma_Overlap   = gamma_overlap,
 
             KMeans_ARI      = randindex(kmeans_result.assignments, ground_truth)[1],
             KMeans_NMI      = mutualinfo(kmeans_result.assignments, ground_truth, normed=true),

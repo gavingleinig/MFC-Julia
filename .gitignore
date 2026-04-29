@@ -3,3 +3,4 @@ data/Genes/gg_13_5_ssualign.fasta.gz
 data/Genes/gg_13_5_ssualign.fasta
 data/Genes/gg_13_5_taxonomy.txt.gz
 data/Genes/gg_13_5_taxonomy.txt
+data/Genes/gg_13_5_ssualign_filtered_30000.txt
