@@ -18,6 +18,8 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
 
     results = []
 
+    results_runtime = []
+
     for sigma in sigma_values
         println("Evaluating sigma = $sigma")
         loop_start = time()
@@ -33,15 +35,18 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         )
 
         # Initial Clustering
-        clustering_result = k_centering(points, num_clusters, 1, dist_func)
+        k_centering_runtime = @elapsed clustering_result = k_centering(points, num_clusters, 1, dist_func)
 
         points_matrix = stack(points) # put points into 2D vector
-        kmeans_result = kmeans(points_matrix, num_clusters)
+
+        
+        full_kmeans_runtime = @elapsed kmeans_result = kmeans(points_matrix, num_clusters)
+        
 
         # MFC Variants
-        mfc_approx_result = metric_forest_completion_approx(points, num_clusters, clustering_result.assignments, dist_func)
-        mfc_optimal_result = metric_forest_completion_optimal(points, num_clusters, clustering_result.assignments, dist_func)
-        mfc_simple_result = metric_forest_completion_simple(points, num_clusters, clustering_result.assignments, dist_func)
+        mfc_approx_runtime  = @elapsed mfc_approx_result = metric_forest_completion_approx(points, num_clusters, clustering_result.assignments, dist_func)
+        mfc_optimal_runtime = @elapsed mfc_optimal_result = metric_forest_completion_optimal(points, num_clusters, clustering_result.assignments, dist_func)
+        mfc_simple_runtime  = @elapsed mfc_simple_result = metric_forest_completion_simple(points, num_clusters, clustering_result.assignments, dist_func)
 
         # Combine all edges 
         all_ST_approx_edges  = vcat(mfc_approx_result.cluster_edges, mfc_approx_result.completion_edges)
@@ -51,15 +56,30 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         n_pts = length(points) 
 
         # Compute Optimal MST & Naive ST
-        mst_complete = convert_mst_to_weight(mst_implicit(points, dist_func))
-        naive_st_complete = convert_mst_to_weight(naive_random_st(points, dist_func))
+        mst_runtime      = @elapsed mst_complete  = convert_mst_to_weight(mst_implicit(points, dist_func))
+        naive_st_runtime = @elapsed naive_st_complete = convert_mst_to_weight(naive_random_st(points, dist_func))
 
-        best_mst, mst_ari         = best_single_linkage_threshold_increment(mst_complete, n_pts, ground_truth,0.01 )
-        best_naive, naive_ari     = best_single_linkage_threshold_increment(naive_st_complete, n_pts, ground_truth,0.01 )
-        best_approx, approx_ari   = best_single_linkage_threshold_increment(all_ST_approx_edges, n_pts, ground_truth,0.01 )
-        best_optimal, optimal_ari = best_single_linkage_threshold_increment(all_ST_optimal_edges, n_pts, ground_truth,0.01 )
-        best_simple, simple_ari   = best_single_linkage_threshold_increment(all_ST_simple_edges, n_pts, ground_truth ,0.01)
+        mst_single_link_runtime     = @elapsed best_mst, mst_ari         = best_single_linkage_threshold_increment(mst_complete, n_pts, ground_truth,0.01 )
+        naive_single_link_runtime   = @elapsed best_naive, naive_ari     = best_single_linkage_threshold_increment(naive_st_complete, n_pts, ground_truth,0.01 )
+        approx_single_link_runtime  = @elapsed best_approx, approx_ari   = best_single_linkage_threshold_increment(all_ST_approx_edges, n_pts, ground_truth,0.01 )
+        optimal_single_link_runtime = @elapsed best_optimal, optimal_ari = best_single_linkage_threshold_increment(all_ST_optimal_edges, n_pts, ground_truth,0.01 )
+        simple_single_link_runtime  = @elapsed best_simple, simple_ari   = best_single_linkage_threshold_increment(all_ST_simple_edges, n_pts, ground_truth ,0.01)
 
+
+        # Full Runtime Caluculations
+        full_mst_runtime     = mst_runtime         + mst_single_link_runtime
+        full_naive_runtime   = naive_st_runtime    + naive_single_link_runtime 
+        full_approx_runtime  = mfc_approx_runtime  + approx_single_link_runtime  + k_centering_runtime
+        full_optimal_runtime = mfc_optimal_runtime + optimal_single_link_runtime + k_centering_runtime
+        full_simple_runtime  = mfc_simple_runtime  + simple_single_link_runtime  + k_centering_runtime
+        println("mfc_approx_runtime: ",mfc_approx_runtime )
+        println("mfc_optimal_runtime: ", mfc_optimal_runtime)
+
+
+
+
+
+        # Clustering results
         push!(results, (
             Sigma           = sigma,
 
@@ -84,24 +104,56 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
             MFC_Simple_ARI  = simple_ari,
             MFC_Simple_NMI  = mutualinfo(best_simple.assignments, ground_truth, normed=true)
         ))
+
+        # Runtime results
+        push!(results_runtime, (
+            Sigma               = sigma,
+
+            KMeans_runtime      = full_kmeans_runtime,
+
+            KC_runtime          = k_centering_runtime,
+            
+            MST_runtime         = full_mst_runtime,
+            
+            Naive_runtime       = full_naive_runtime,
+            
+            MFC_Approx_runtime  = full_approx_runtime,
+            
+            MFC_Optimal_runtime = full_optimal_runtime,
+            
+            MFC_Simple_runtime  = full_simple_runtime,
+        ))
+
+
+
         loop_elapsed = time() - loop_start
         println("   Completed in $(round(loop_elapsed, digits=2)) sec")
     end
 
     # convert results to a DataFrame, print
     df = DataFrame(results)
+
+    runtime_df =  DataFrame(results_runtime)
     
     println("\nFinal Results:")
     println(df)
 
+    println("\nRuntime Results:")
+    println(runtime_df)
+
     # Save to CSV
     output_file = CSV_label
+    runtime_output_file = string("runtime_",CSV_label)
+
 
     CSV.write(output_file, df)
     println("\nResults saved to $output_file")
+
+    CSV.write(runtime_output_file, runtime_df)
+    println("\nRuntime safed to $runtime_output_file")
     
     return df
 end
 
-# sigmas_to_test = 0.1:0.2:1.5
-# df_results = run_gaussian_sigma_sweep(sigmas_to_test,8,32,"clustering_results.csv")
+sigmas_to_test = 0.1:0.2:1.5
+df_results = run_gaussian_sigma_sweep(sigmas_to_test,8,32,"clustering_results.csv")

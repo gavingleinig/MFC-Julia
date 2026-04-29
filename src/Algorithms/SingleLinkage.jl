@@ -123,6 +123,8 @@ function best_single_linkage_threshold(
     num_points::Int,
     ground_truth::AbstractVector{Int64}
 )
+
+    beginTime = time()
     ari_max = 0
     best_threshold = ClusteringResult{Float64}(Vector{Int}(undef, 0),0.0)
     for e in edges
@@ -140,5 +142,6 @@ function best_single_linkage_threshold(
         end
     end
 
+    runtime = time() - beginTime
     return (best_threshold, ari_max)
 end

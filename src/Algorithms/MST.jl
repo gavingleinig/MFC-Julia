@@ -31,7 +31,7 @@ end
 
 # Takes list of points and distance function, returns list of edges with distances pre-calculated
 function mst_implicit(points::AbstractVector{V}, dist_func::F) where {V, F}
-
+    beginTime = time()
     n = length(points)
     T = Base.promote_op(dist_func, eltype(points), eltype(points)) # Infer return type of distance function
 
@@ -56,7 +56,14 @@ function mst_implicit(points::AbstractVector{V}, dist_func::F) where {V, F}
     end
     
     # Final MST calculation
-    return mst!(n, edges)
+
+
+    final_edges = mst!(n, edges)
+
+
+    runtime = time() - beginTime
+
+    return final_edges
 end
 
 # Computes a naive, random spanning tree by randomly selecting edges 
