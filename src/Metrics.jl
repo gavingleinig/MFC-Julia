@@ -29,3 +29,18 @@ function jaccard(a::AbstractVector{Int}, b::AbstractVector{Int})
     intersection_size = length(intersect(a, b))
     return 1.0 - (intersection_size / union_size)
 end
+
+function hamming(a::AbstractString, b::AbstractString)
+    if length(a) != length(b)
+        throw(ArgumentError("Sequences not same length"))
+    end
+    
+    distance = 0.0
+    for (char_a, char_b) in zip(a, b)
+        if char_a != char_b
+            distance += 1.0
+        end
+    end
+    
+    return distance
+end

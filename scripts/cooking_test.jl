@@ -60,13 +60,12 @@ function run_cooking_test(file_path::String, ground_truth_file_path::String)
     naive_st_complete = convert_mst_to_weight(naive_st_edges)
 
         # Parameter sweeps for best thresholds
-    t_sweep_mst = @elapsed best_result_mst, max_ari_mst = best_single_linkage_threshold(mst_complete, num_points, ground_truth, 1.0)
-    t_sweep_naive = @elapsed best_result_naive, max_ari_naive = best_single_linkage_threshold(naive_st_complete, num_points, ground_truth, 1.0)
+    t_sweep_mst = @elapsed best_result_mst, max_ari_mst = best_single_linkage_threshold_increment(mst_complete, num_points, ground_truth, 1.0)
+    t_sweep_naive = @elapsed best_result_naive, max_ari_naive = best_single_linkage_threshold_increment(naive_st_complete, num_points, ground_truth, 1.0)
 
-    t_sweep_approx = @elapsed best_result_approx, max_ari_approx = best_single_linkage_threshold(all_ST_approx_edges, num_points, ground_truth, 1.0)
-    t_sweep_optimal = @elapsed best_result_optimal, max_ari_optimal = best_single_linkage_threshold(all_ST_optimal_edges, num_points, ground_truth, 1.0)
-    t_sweep_simple = @elapsed best_result_simple, max_ari_simple = best_single_linkage_threshold(all_ST_simple_edges, num_points, ground_truth, 1.0)
-
+    t_sweep_approx = @elapsed best_result_approx, max_ari_approx = best_single_linkage_threshold_increment(all_ST_approx_edges, num_points, ground_truth, 1.0)
+    t_sweep_optimal = @elapsed best_result_optimal, max_ari_optimal = best_single_linkage_threshold_increment(all_ST_optimal_edges, num_points, ground_truth, 1.0)
+    t_sweep_simple = @elapsed best_result_simple, max_ari_simple = best_single_linkage_threshold_increment(all_ST_simple_edges, num_points, ground_truth, 1.0)
 
     println("Optimal MST Computation:             ", round(t_mst_compute, digits=4), " seconds")
 
