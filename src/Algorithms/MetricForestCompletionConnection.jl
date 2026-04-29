@@ -92,10 +92,10 @@ function metric_forest_completion_edges_optimal(
 
     # Consider all clusters 
     for cluster_i in 1:cluster_count
-        partition_i = global_indices_by_cluster[i]
+        partition_i = global_indices_by_cluster[cluster_i]
 
-        for cluster_j in (i+i):cluster_count
-            partition_j = global_indices_by_cluster[j]
+        for cluster_j in (cluster_i+cluster_i):cluster_count
+            partition_j = global_indices_by_cluster[cluster_j]
 
             if length(partition_i) == 0 || length(partition_j) == 0
                 continue
@@ -109,8 +109,8 @@ function metric_forest_completion_edges_optimal(
             best_a_rep = -1
             best_b_rep = -1
 
-            for i in 1:length!(global_indices_by_cluster[i])
-                for j in 1:length!(global_indices_by_cluster[j])
+            for i in 1:length(global_indices_by_cluster[cluster_i])
+                for j in 1:length(global_indices_by_cluster[cluster_j])
                     a_rep = global_indices_by_cluster[cluster_i][i]
                     b_rep = global_indices_by_cluster[cluster_j][j]
                     dist = dist_func(points[a_rep],points[b_rep])
@@ -127,7 +127,7 @@ function metric_forest_completion_edges_optimal(
 
             push!(
                 unmapped_completion_edges, 
-                CompletionEdge(i, j, best_a_rep, best_b_rep, best_dist)
+                CompletionEdge(cluster_i, cluster_j, best_a_rep, best_b_rep, best_dist)
             )
         end 
     end
