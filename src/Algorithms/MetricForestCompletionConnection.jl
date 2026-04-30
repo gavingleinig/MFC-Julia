@@ -64,7 +64,7 @@ function metric_forest_completion_Edges_approx_simple(
                 if dist < best_dist
                     best_dist = dist
                     best_a_rep = point_i_idx
-                    best_b_rep = global_indices_by_cluster[i][i_rep] # = rep_idx_j
+                    best_b_rep = global_indices_by_cluster[j][j_rep] # = rep_idx_j
                 end
             end
 
@@ -168,7 +168,7 @@ function metric_forest_completion_edges_random_connection(
 
             push!(
                 unmapped_completion_edges, 
-                CompletionEdge(i, j, i_rep, j_rep, dist)
+                CompletionEdge(i, j, global_indices_by_cluster[i][i_rep], global_indices_by_cluster[j][j_rep], dist)
             )
         end 
     end
