@@ -56,6 +56,13 @@ function run_cooking_test(file_path::String, ground_truth_file_path::String)
     t_mst_compute = @elapsed mst_edges = mst_implicit(points, dist_func)
     mst_complete = convert_mst_to_weight(mst_edges)
 
+    initial_forest_complete = mfc_approx_result.cluster_edges
+    gamma_overlap = compute_gamma_overlap(
+        initial_forest_complete, 
+        mst_complete, 
+        clustering_result.assignments
+    )
+
     naive_st_edges = naive_random_st(points, dist_func)
     naive_st_complete = convert_mst_to_weight(naive_st_edges)
 
@@ -66,6 +73,37 @@ function run_cooking_test(file_path::String, ground_truth_file_path::String)
     t_sweep_approx = @elapsed best_result_approx, max_ari_approx = best_single_linkage_threshold_increment(all_ST_approx_edges, num_points, ground_truth, 1.0)
     t_sweep_optimal = @elapsed best_result_optimal, max_ari_optimal = best_single_linkage_threshold_increment(all_ST_optimal_edges, num_points, ground_truth, 1.0)
     t_sweep_simple = @elapsed best_result_simple, max_ari_simple = best_single_linkage_threshold_increment(all_ST_simple_edges, num_points, ground_truth, 1.0)
+
+
+    # Cost ratio: How close are approx MFC trees to optimal ST?
+    weight_mst = sum(e[3] for e in mst_complete)
+    weight_approx = sum(e[3] for e in all_ST_approx_edges)
+    weight_optimal = sum(e[3] for e in all_ST_optimal_edges)
+    
+    cost_ratio_approx = weight_approx / weight_mst
+    cost_ratio_optimal = weight_optimal / weight_mst
+
+    # What edges in  Optimal MST connect different ground truth cuisines?
+    # How big / small are the distances are between cuisines?
+    cross_cluster_edges = Tuple{Int, Int, Float64}[]
+    for (u, v, w) in mst_complete
+        if ground_truth[u] != ground_truth[v]
+            push!(cross_cluster_edges, (u, v, w))
+        end
+    end
+    
+    sort!(cross_cluster_edges, by = x -> x[3])
+    num_bridges = length(cross_cluster_edges)
+    mean_bridge_weight = num_bridges > 0 ? sum(e[3] for e in cross_cluster_edges) / num_bridges : 0.0
+
+    # What if we cut k longest edges? Is this any better?
+    t_k_mst = @elapsed result_k_mst = single_linkage_k_clusters(mst_complete, num_points, num_clusters)
+    t_k_approx = @elapsed result_k_approx = single_linkage_k_clusters(all_ST_approx_edges, num_points, num_clusters)
+    t_k_optimal = @elapsed result_k_optimal = single_linkage_k_clusters(all_ST_optimal_edges, num_points, num_clusters)
+
+    
+
+    println("\n### Evaluation OLD ###")
 
     println("Optimal MST Computation:             ", round(t_mst_compute, digits=4), " seconds")
 
@@ -101,6 +139,8 @@ function run_cooking_test(file_path::String, ground_truth_file_path::String)
     println("ARI: ", round(kc_ari, digits=4))
     println("NMI: ", round(kc_nmi, digits=4))
 
+    println("y-overlap Bound:             ", round(gamma_overlap, digits=4))
+
     println("\nMST Single Linkage (Best Threshold):")
     mst_nmi = mutualinfo(best_result_mst.assignments, ground_truth, normed=true)
     println("ARI: ", round(max_ari_mst, digits=4))
@@ -125,6 +165,25 @@ function run_cooking_test(file_path::String, ground_truth_file_path::String)
     mfc_best_simple_nmi = mutualinfo(best_result_simple.assignments, ground_truth, normed=true)
     println("ARI: ", round(max_ari_simple, digits=4))
     println("NMI: ", round(mfc_best_simple_nmi, digits=4))
+
+    println("\n### Evaluation Pt 2###")
+    
+    println("\nCost Rations")
+    println("MFC Approx Cost Ratio:       ", round(cost_ratio_approx, digits=4))
+    println("MFC Optimal Cost Ratio:      ", round(cost_ratio_optimal, digits=4))
+    
+    println("\nMST Cluster Analysis:")
+    println("Total cross-cuisine edges:   ", num_bridges)
+    if num_bridges > 0
+        println("Shortest cross-cuisine edge: ", round(cross_cluster_edges[1][3], digits=4))
+        println("Average cross-cuisine edge:  ", round(mean_bridge_weight, digits=4))
+    end
+
+    println("\nSingle Linkage w/ cut 19 Longest Edges")
+    println("Optimal MST ARI: ", round(randindex(result_k_mst.assignments, ground_truth)[1], digits=4), "NMI: ", round(mutualinfo(result_k_mst.assignments, ground_truth, normed=true), digits=4))
+    println("MFC Approx ARI: ", round(randindex(result_k_approx.assignments, ground_truth)[1], digits=4), "NMI: ", round(mutualinfo(result_k_approx.assignments, ground_truth, normed=true), digits=4))
+
+
 end
 
 run_cooking_test("data/Cooking/cooking.txt","data/Cooking/cooking_labels.txt")
