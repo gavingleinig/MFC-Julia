@@ -67,11 +67,11 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
 
 
         # Full Runtime Caluculations
-        full_mst_runtime     = mst_runtime         + mst_single_link_runtime
-        full_naive_runtime   = naive_st_runtime    + naive_single_link_runtime 
-        full_approx_runtime  = mfc_approx_runtime  + approx_single_link_runtime  + k_centering_runtime
-        full_optimal_runtime = mfc_optimal_runtime + optimal_single_link_runtime + k_centering_runtime
-        full_simple_runtime  = mfc_simple_runtime  + simple_single_link_runtime  + k_centering_runtime
+        full_mst_runtime     = mst_runtime                                 #  + mst_single_link_runtime
+        full_naive_runtime   = naive_st_runtime                            #  + naive_single_link_runtime 
+        full_approx_runtime  = mfc_approx_runtime + k_centering_runtime    # + approx_single_link_runtime  
+        full_optimal_runtime = mfc_optimal_runtime+ k_centering_runtime    # + optimal_single_link_runtime + k_centering_runtime
+        full_simple_runtime  = mfc_simple_runtime + k_centering_runtime    # + simple_single_link_runtime  + k_centering_runtime
         println("mfc_approx_runtime cluster runtime: ",mfc_approx_result.sub_cluster_runtime)
         println("mfc_approx_runtime  completion runtime: ",mfc_approx_result.completion_edges_runtime )
         println("mfc_approx_runtime  full runtime: ",mfc_approx_result.completion_runtime )

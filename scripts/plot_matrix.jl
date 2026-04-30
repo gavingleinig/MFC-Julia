@@ -59,7 +59,23 @@ end
 
 function plot_matrix_runtime(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int64}, dim::Vector{Int64})
 
-    final_plot = create_final_plot("Runtime (sec)")
+     l = @layout [grid(length(dim), length(gausin))
+             b{0.05h}] 
+
+    
+    final_plot = plot(
+        layout=l,
+        xlabel ="",
+        ylabel = "Runtime (sec)",
+        legend = false,
+        grid = true,
+        xguidefontsize=4,
+        yguidefontsize=4,
+        xtickfontsize=4,
+        ytickfontsize=4,
+        titlefontsize=4
+
+        )
     plot_data(matrix_df, gausin, dim, final_plot,plot_dataframe_runtime)
 
     output_image = string("clustering_metrics_vs_sigma_dim_",length(dim),"_Gaus_",length(gausin),"_ARI",".png")
@@ -109,11 +125,11 @@ function plot_data(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int64}, d
     # add ledger 
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Centering", marker = :circle,    legend = :inside,legendfontsize = 3, legend_column = 7, legendframestyle = :none, framestyle = :none, axis = false, grid = false)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Optimal MST", marker = :square,    legend = :inside)
-    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
+    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Approx",  marker = :diamond,   legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Optimal", marker = :star5,     legend = :inside)
-    # plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Simple",  marker = :cross,     legend = :inside)
-    #plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Means",     marker = :xcross,    legend = :inside)
+    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Simple",  marker = :cross,     legend = :inside)
+    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Means",     marker = :xcross,    legend = :inside)
     display(final_plot)
 
 
@@ -156,11 +172,11 @@ function plot_dataframe_nmi(df::DataFrame,plots,j,label,gausin_label)
     
     plot!(plots, sigmas,markersize = 2,  df.KC_NMI, marker=:circle, lw=1,  subplot=j, xlabel =label, title=gausin_label )
     plot!(plots, sigmas,markersize = 2,  df.MST_NMI, marker=:square, lw=1, subplot=j)
-    # plot!(plots, sigmas,markersize = 2,  df.Naive_NMI, marker=:dtriangle, lw=1, subplot=j)
+    plot!(plots, sigmas,markersize = 2,  df.Naive_NMI, marker=:dtriangle, lw=1, subplot=j)
     plot!(plots, sigmas,markersize = 2,  df.MFC_Approx_NMI, marker=:diamond, lw=1, subplot=j)
     plot!(plots, sigmas,markersize = 2,  df.MFC_Optimal_NMI, marker=:star5, lw=1, subplot=j)
-    # plot!(plots, sigmas,markersize = 2,  df.MFC_Simple_NMI, marker=:cross, lw=1, subplot=j)
-    # plot!(plots, sigmas,markersize = 2,  df.KMeans_NMI, marker=:xcross, lw=1, subplot=j)
+    plot!(plots, sigmas,markersize = 2,  df.MFC_Simple_NMI, marker=:cross, lw=1, subplot=j)
+    plot!(plots, sigmas,markersize = 2,  df.KMeans_NMI, marker=:xcross, lw=1, subplot=j)
 
 
     # plot!(plots,p_ari, layout=(1, 2), size=(1000, 450), margin=5Plots.mm, subplot=j)
@@ -200,11 +216,11 @@ function plot_dataframe_runtime(df::DataFrame,plots,j,label,gausin_label)
     
     plot!(plots, sigmas,subplot=j,markersize = 2 , df.KC_runtime, marker=:circle, lw=.5, xlabel=label, title=gausin_label)
     plot!(plots, sigmas,subplot=j,markersize = 2 , df.MST_runtime, marker=:square, lw=.5)
-    #plot!(plots, sigmas,subplot=j,markersize = 2 , df.Naive_runtime, marker=:dtriangle, lw=.5)
+    plot!(plots, sigmas,subplot=j,markersize = 2 , df.Naive_runtime, marker=:dtriangle, lw=.5)
     plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Approx_runtime, marker=:diamond, lw=.5)
     plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Optimal_runtime, marker=:star5, lw=.5)
-    #plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Simple_runtime, marker=:cross, lw=.5)
-    #plot!(plots, sigmas,subplot=j,markersize = 2 , df.KMeans_runtime, marker=:xcross, lw=.5)
+    plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Simple_runtime, marker=:cross, lw=.5)
+    plot!(plots, sigmas,subplot=j,markersize = 2 , df.KMeans_runtime, marker=:xcross, lw=.5)
 
 
 
@@ -220,11 +236,12 @@ dim = [4,16,64,128]
 
 
 # create graphs for cluster
-# df_matrix  = load_matrix(gausin,dim,"clustering_results")
-# plot_matrix_ari(df_matrix,gausin,dim)
+df_matrix  = load_matrix(gausin,dim,"clustering_results")
+plot_matrix_nmi(df_matrix,gausin,dim)
 
-
-# create graphs for runtime
-# df_matrix  = load_matrix(gausin,dim,"clustering_results")
+# gausin = [16,64,256]
+# dim = [4,16,64,128]
+# # create graphs for runtime
+# df_matrix  = load_matrix(gausin,dim,"runtime_clustering_results")
 # plot_matrix_runtime(df_matrix,gausin,dim)
 

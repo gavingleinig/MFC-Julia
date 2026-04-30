@@ -24,7 +24,7 @@ function metric_forest_completion_Edges_approx_simple(
     for i in 1:cluster_count
         partition_i = global_indices_by_cluster[i]
 
-        for j in (i+i):cluster_count
+        for j in i+1:cluster_count
             partition_j = global_indices_by_cluster[j]
 
             if length(partition_i) == 0 || length(partition_j) == 0
@@ -94,7 +94,7 @@ function metric_forest_completion_edges_optimal(
     for cluster_i in 1:cluster_count
         partition_i = global_indices_by_cluster[cluster_i]
 
-        for cluster_j in (cluster_i+cluster_i):cluster_count
+        for cluster_j in (cluster_i+1):cluster_count
             partition_j = global_indices_by_cluster[cluster_j]
 
             if length(partition_i) == 0 || length(partition_j) == 0
@@ -151,7 +151,7 @@ function metric_forest_completion_edges_random_connection(
     for i in 1:cluster_count
         partition_i = global_indices_by_cluster[i]
 
-        for j in (i+i):cluster_count
+        for j in (i+1):cluster_count
             partition_j = global_indices_by_cluster[j]
 
             if length(partition_i) == 0 || length(partition_j) == 0
