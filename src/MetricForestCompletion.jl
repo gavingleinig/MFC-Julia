@@ -29,6 +29,6 @@ export single_linkage_threshold, single_linkage_k_clusters, best_single_linkage_
 export mst_implicit, naive_random_st
 
 # From MetricForestUtils.jl
-export convert_mst_to_weight
+export convert_mst_to_weight, compute_gamma_overlap
 
 end # module MetricForestCompletion
