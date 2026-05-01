@@ -4,7 +4,7 @@ using Clustering
 
 function run_genes_test(file_path::String, ground_truth_file_path::String)
 
-    num_clusters = 153
+    num_clusters = 20
     dist_func = hamming
 
     points = String[]
@@ -135,4 +135,4 @@ function run_genes_test(file_path::String, ground_truth_file_path::String)
     println("NMI: ", round(mfc_best_simple_nmi, digits=4))
 end
 
-run_genes_test("data/Genes/gg_13_5_ssualign_filtered_30000.txt", "data/Genes/gg_13_5_labels_all_30000.csv")
+run_genes_test("data/Genes/gg_13_5_ssualign_filtered_3000.txt", "data/Genes/gg_13_5_labels_all_3000.csv")
