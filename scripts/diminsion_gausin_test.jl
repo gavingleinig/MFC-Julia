@@ -9,7 +9,7 @@ include("evaluation.jl")
 
 function diminsion_gausian_test()
     gausin = [16,64,256]
-    dim = [4,16,32]
+    dim = [64]
 
     for dim_num in dim
         println("Testing dim: ",dim_num)

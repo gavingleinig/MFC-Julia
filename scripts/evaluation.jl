@@ -155,8 +155,8 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
     println(runtime_df)
 
     # Save to CSV
-    output_file = CSV_label
-    runtime_output_file = string("runtime_",CSV_label)
+    output_file = string("data/Systhetic/",CSV_label)
+    runtime_output_file = string("data/Systhetic/runtime_",CSV_label)
 
 
     CSV.write(output_file, df)
@@ -168,5 +168,5 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
     return df
 end
 
-sigmas_to_test = 0.1:0.2:2
-df_results = run_gaussian_sigma_sweep(sigmas_to_test,256,128,"clustering_results.csv")
+# sigmas_to_test = 0.1:0.2:2
+# df_results = run_gaussian_sigma_sweep(sigmas_to_test,16,128,"clustering_results.csv")

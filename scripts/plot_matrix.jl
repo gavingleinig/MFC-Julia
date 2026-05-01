@@ -323,12 +323,12 @@ function print_out_tabels(df::DataFrame,plots,j,label,gausin_label)
 
 end
 
-gausin = [16,64]
-dim = [4,16,64]
+gausin = [16,128]
+dim = [4,16]
 
 
 # # create graphs for cluster
-df_matrix  = load_matrix(gausin,dim,"clustering_results")
+df_matrix  = load_matrix(gausin,dim,"data/Systhetic/sigma_clustering_results")
 plot_matrix_nmi(df_matrix,gausin,dim)
 
 # gausin = [16,32,64,128,256]
