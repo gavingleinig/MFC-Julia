@@ -156,5 +156,5 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
     return df
 end
 
-# sigmas_to_test = 0.1:0.2:1.5
-# df_results = run_gaussian_sigma_sweep(sigmas_to_test,16,128,"clustering_results.csv",2000,(-5,5))
+sigmas_to_test = 0.1:0.2:1.5
+df_results = run_gaussian_sigma_sweep(sigmas_to_test,16,128,"clustering_results.csv",2000,(-5,5))
