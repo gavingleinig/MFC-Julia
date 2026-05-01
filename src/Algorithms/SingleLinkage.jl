@@ -13,6 +13,12 @@ function components_to_assignments(components::Vector{Vector{Int}}, num_points::
     return assignments
 end
 
+"""
+    single_linkage_threshold(edges, num_points::Int, threshold::Real)
+
+Extract clusters by  dropping all edges heavier than 'threshold.'
+Returns a ClusteringResult of the connected components.
+"""
 function single_linkage_threshold(
     edges::Vector{Tuple{Int, Int, T}}, 
     num_points::Int, 
@@ -37,6 +43,12 @@ function single_linkage_threshold(
     return ClusteringResult{Float64}(assignments, time() - start_time)
 end
 
+"""
+    single_linkage_k_clusters(edges, num_points::Int, k::Int)
+
+Extract exactly k clusters from a graph by keeping only the [num_points - k] lightest edges.
+Returns a ClusteringResult of the connected components.
+"""
 function single_linkage_k_clusters(
     edges::Vector{Tuple{Int, Int, T}}, 
     num_points::Int, 
@@ -118,6 +130,12 @@ function best_single_linkage_threshold_increment(
     return (best_threshold, ari_max)
 end
 
+"""
+    best_single_linkage_threshold(edges, num_points::Int, ground_truth::AbstractVector{Int})
+
+Evaluate every edge weight as a clustering threshold to find the configuration that maximizes the Adjusted Rand Index (ARI) against the ground_truth
+Returns tuple of (best_threshold_ClusteringResult, max_ari).
+"""
 function best_single_linkage_threshold(
     edges::Vector{Tuple{Int, Int, Float64}}, 
     num_points::Int,

@@ -8,6 +8,11 @@ struct MFCResult{T}
     completion_runtime::Float64                 # total runtime of the MFC algorithm
 end
 
+"""
+    metric_forest_completion_approx(points, cluster_count, cluster_assignments, dist_func)
+
+Compute an approximate Metric Forest Completion using representatives to find the completion edges bridging disjoint clusters.
+"""
 function metric_forest_completion_approx(
     points::AbstractVector{V},          # An array of type V representing data points
     cluster_count::Int,                 # The total number of clusters the data was divided into initial clustering
@@ -83,6 +88,12 @@ function metric_forest_completion_approx(
     ) 
 end
 
+"""
+    metric_forest_completion_optimal(points, cluster_count, cluster_assignments, dist_func)
+
+Compute the exact Metric Forest Completion. Builds local Minimum Spanning Trees for each cluster, 
+then calculates the shortest bridging edges required to connect the disjoint trees into a global MST.
+"""
 function metric_forest_completion_optimal(
     points::AbstractVector{V},          # An array of type V representing data points
     cluster_count::Int,                 # The total number of clusters the data was divided into initial clustering
