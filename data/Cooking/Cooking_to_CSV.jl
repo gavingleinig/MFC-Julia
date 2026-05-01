@@ -50,7 +50,7 @@ for recipe in cooking
 end
 
 df = DataFrame(my_column = EdgeColors)
-CSV.write("cooking_labels.csv", df)
+CSV.write("cooking_labels.txt", df)
 
 # Cuisine2Label = CuNum
 # Ingredient2num= IngNum
