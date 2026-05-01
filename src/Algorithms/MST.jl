@@ -11,7 +11,12 @@ Base.isless(e1::WeightedEdge, e2::WeightedEdge) = isless(e1.weight, e2.weight)
 Base.isless(e1::CompletionEdge, e2::CompletionEdge) = isless(e1.weight, e2.weight)
 
 
-# Computes optimum MST for given graph using Kruskal's algorithm
+"""
+    mst!(n::Int, edges::Vector{E})
+
+Compute the Minimum Spanning Tree (MST) in-place using Kruskal's algorithm. 
+Returns a pruned vector of the n-1 edges that form the MST.
+"""
 function mst!(n::Int, edges::Vector{E}) where E
     sort!(edges) # uses above comparison, Base.isless
     dj_sets = IntDisjointSets(n)
@@ -29,7 +34,11 @@ function mst!(n::Int, edges::Vector{E}) where E
     return kept_edges
 end
 
-# Takes list of points and distance function, returns list of edges with distances pre-calculated
+"""
+    mst_implicit(points::AbstractVector, dist_func::Function)
+
+Compute the exact Minimum Spanning Tree for a set of points by implicitly generating pairwise distances
+"""
 function mst_implicit(points::AbstractVector{V}, dist_func::F) where {V, F}
     beginTime = time()
     n = length(points)
@@ -66,8 +75,11 @@ function mst_implicit(points::AbstractVector{V}, dist_func::F) where {V, F}
     return final_edges
 end
 
-# Computes a naive, random spanning tree by randomly selecting edges 
-# and adding them if they do not form a cycle.
+"""
+    naive_random_st(points::AbstractVector, dist_func::Function)
+
+Generate a fast, naive random spanning tree by picking random pairs of vertices until n-1 valid, cycle-free edges are found
+"""
 function naive_random_st(points::AbstractVector{V}, dist_func::F) where {V, F}
     n = length(points)
     T = Base.promote_op(dist_func, eltype(points), eltype(points)) # Infer return type

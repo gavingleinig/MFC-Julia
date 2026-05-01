@@ -1,17 +1,14 @@
-# k_means
-# k_centering
-# perhaps use Julia's Clustering.jl? Not a bad idea I will look into it
-# we can further use diffrent clustering algorithems to see if we increase effincancy
-#using()
-
 struct ClusteringResult{T<:Real}
     assignments::Vector{Int}
     runtime::T
 end
 
 
-# helper functions
+"""
+    closest_point(point, centroids::AbstractVector, dist_func::Function)
 
+Find the index of the nearest centroid to a given 'point' using the provided distance function
+"""
 function closest_point(
     point,
     centroids::AbstractVector, 
@@ -33,9 +30,12 @@ function closest_point(
     return res
 end
 
-# V <: AbstractVector: Represents the type of a single point (e.g., Vector{Float64})
-# F <: Function: Specializes the compiler for the exact distance function provided
-# furtheset point function is never used so I am not including it
+"""
+    k_centering(points::AbstractVector, k::Int, initial_index::Int, dist_func::Function)
+
+Perform greedy 2-approx k-center clustering by iteratively picking the point furthest from all existing centroids. 
+Returns a 'ClusteringResult' containing cluster assignments and runtime.
+"""
 function k_centering(
     points::AbstractVector, 
     k::Int,

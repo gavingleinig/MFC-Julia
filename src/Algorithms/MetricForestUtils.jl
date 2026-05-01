@@ -28,8 +28,10 @@ end
 
 
 """
-Calculates the practical upper bound for the y-overlap (gamma).
-This measures how much the optimal MST overlaps with the initial k-center partitions.
+    compute_gamma_overlap(initial_forest_edges, optimal_mst_edges, assignments)
+
+Calculate the practical upper bound for the y-overlap. 
+This is the weight ratio of the initial local forest to the optimal MST contained within those same clusters
 """
 function compute_gamma_overlap(
     initial_forest_edges::Vector{Tuple{Int, Int, T}}, 
