@@ -114,6 +114,35 @@ function plot_matrix_gamma(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{I
 
 end
 
+function matrix_table(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int64}, dim::Vector{Int64})
+
+     l = @layout [grid(length(dim), length(gausin))
+             b{0.05h}] 
+
+    
+    final_plot = plot(
+        layout=l,
+        xlabel ="",
+        ylabel = "ARI",
+        legend = false,
+        grid = true,
+        xguidefontsize=4,
+        yguidefontsize=4,
+        xtickfontsize=4,
+        ytickfontsize=4,
+        titlefontsize=4,
+        yticks=0:0.25:1,
+        ylims=(0, 1),
+
+        )
+    plot_data(matrix_df, gausin, dim, final_plot,print_out_tabels)
+
+    output_image = string("clustering_metrics_vs_sigma_dim_",length(dim),"_Gaus_",length(gausin),"_ARI",".png")
+    savefig(final_plot, output_image)
+    println("Plot saved to $output_image")
+
+end
+
 
 
 function plot_data(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int64}, dim::Vector{Int64}, final_plot, plot_dataframe::F)where {F<:Function}
@@ -141,6 +170,10 @@ function plot_data(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int64}, d
                 
                 
             end
+            
+                
+                    gausin_label = string("Gaussians: ",gausin_num,"\nUniform Random Pontis d=",dim_num)
+            
 
             println("Testing subplot: ", j+((i-1)*length(gausin)))
             plot_dataframe(matrix_df[i][j],final_plot,j+((i-1)*length(gausin)), label,gausin_label)
@@ -284,17 +317,23 @@ function plot_dataframe_runtime(df::DataFrame,plots,j,label,gausin_label)
 end
 
 
+function print_out_tabels(df::DataFrame,plots,j,label,gausin_label)
+    println(gausin_label)
+    println(describe(df))
+
+end
+
 gausin = [16,64,256]
-dim = [4,16,64,128]
+dim = [4,16]
 
 
-# create graphs for cluster
-df_matrix  = load_matrix(gausin,dim,"clustering_results")
-plot_matrix_gamma(df_matrix,gausin,dim)
+# # create graphs for cluster
+df_matrix  = load_matrix(gausin,dim,"sigma_clustering_results")
+plot_matrix_nmi(df_matrix,gausin,dim)
 
-# gausin = [16,64,256]
+# gausin = [16,32,64,128,256]
 # dim = [4,16,64,128]
-# # create graphs for runtime
+# create graphs for runtime
 # df_matrix  = load_matrix(gausin,dim,"runtime_clustering_results")
-# plot_matrix_runtime(df_matrix,gausin,dim)
+# matrix_table(df_matrix,gausin,dim)
 

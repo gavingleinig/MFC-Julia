@@ -66,11 +66,11 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
             clustering_result.assignments
         )
 
-        mst_single_link_runtime     = @elapsed best_mst, mst_ari         = best_single_linkage_threshold_increment(mst_complete, n_pts, ground_truth,0.01 )
-        naive_single_link_runtime   = @elapsed best_naive, naive_ari     = best_single_linkage_threshold_increment(naive_st_complete, n_pts, ground_truth,0.01 )
-        approx_single_link_runtime  = @elapsed best_approx, approx_ari   = best_single_linkage_threshold_increment(all_ST_approx_edges, n_pts, ground_truth,0.01 )
-        optimal_single_link_runtime = @elapsed best_optimal, optimal_ari = best_single_linkage_threshold_increment(all_ST_optimal_edges, n_pts, ground_truth,0.01 )
-        simple_single_link_runtime  = @elapsed best_simple, simple_ari   = best_single_linkage_threshold_increment(all_ST_simple_edges, n_pts, ground_truth ,0.01)
+        mst_single_link_runtime     = @elapsed best_mst, mst_ari         = best_single_linkage_threshold_increment(mst_complete, n_pts, ground_truth,.01 )
+        naive_single_link_runtime   = @elapsed best_naive, naive_ari     = best_single_linkage_threshold_increment(naive_st_complete, n_pts, ground_truth,.01 )
+        approx_single_link_runtime  = @elapsed best_approx, approx_ari   = best_single_linkage_threshold_increment(all_ST_approx_edges, n_pts, ground_truth, .01 )
+        optimal_single_link_runtime = @elapsed best_optimal, optimal_ari = best_single_linkage_threshold_increment(all_ST_optimal_edges, n_pts, ground_truth, .01 )
+        simple_single_link_runtime  = @elapsed best_simple, simple_ari   = best_single_linkage_threshold_increment(all_ST_simple_edges, n_pts, ground_truth, .01 )
 
 
         # Full Runtime Caluculations
@@ -168,5 +168,5 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
     return df
 end
 
-sigmas_to_test = 0.1:0.2:1.5
-df_results = run_gaussian_sigma_sweep(sigmas_to_test,8,32,"clustering_results.csv")
+sigmas_to_test = 0.1:0.2:2
+df_results = run_gaussian_sigma_sweep(sigmas_to_test,256,128,"clustering_results.csv")
