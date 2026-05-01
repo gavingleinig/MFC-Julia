@@ -10,7 +10,7 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
     
     dim = in_dim
     num_gauss = in_gauss
-    num_points = 2000
+    num_points = 20000
     num_clusters = in_gauss 
     
     # Distance Metric
