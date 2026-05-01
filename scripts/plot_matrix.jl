@@ -332,14 +332,19 @@ end
 # Gamma vs. NMI: plot_matrix_gamma
 
 
-gausin = [16,64,256]
-dim = [64]
-output_file_name = "test_clustering_results"
+gausin = [16,64]
+# gausin = [16,32,64,128,256] # for full sweep
 
+dim = [4,16,64]
+# dim = [4,16,64,128] # for full sweep
+
+output_file_name = "final_clustering_results" 
+# output_file_name = "clustering_results" # for results used in paper
+# output_file_name = "sigma_clustering_results" # for data with sigma to 2
 
 # create graphs for cluster
 df_matrix  = load_matrix(gausin,dim,string("data/Systhetic/",output_file_name))
-plot_matrix_runtime(df_matrix,gausin,dim)
+plot_matrix_nmi(df_matrix,gausin,dim)
 
 
 
