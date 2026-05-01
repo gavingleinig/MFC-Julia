@@ -4,13 +4,15 @@ using Clustering
 using DataFrames
 using CSV
 
-function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_gauss::Int64,CSV_label::String )
+function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_gauss::Int64,CSV_label::String,num_points::Int64, mean_range )
     # Setup Params
     PrecisionType = Float64
     
     dim = in_dim
     num_gauss = in_gauss
-    num_points = 20000
+
+    # Change number of points
+    num_points = num_points
     num_clusters = in_gauss 
     
     # Distance Metric
@@ -25,12 +27,13 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         loop_start = time()
 
         # Generate Dataset
+        # change mean range
         points, ground_truth = generate_gaussians(
             PrecisionType; 
             dim = dim, 
             num_centers = num_gauss, 
             points_per_center = num_points ÷ num_gauss,
-            mean_range = (PrecisionType(-5), PrecisionType(5)),
+            mean_range = (PrecisionType(mean_range[1]), PrecisionType(mean_range[2])),
             sigma_range = (PrecisionType(sigma), PrecisionType(sigma))
         )
 
@@ -115,13 +118,7 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
             MFC_Optimal_NMI = mutualinfo(best_optimal.assignments, ground_truth, normed=true),
             
             MFC_Simple_ARI  = simple_ari,
-            MFC_Simple_NMI  = mutualinfo(best_simple.assignments, ground_truth, normed=true)
-        ))
-
-        # Runtime results
-        push!(results_runtime, (
-            Sigma               = sigma,
-
+            MFC_Simple_NMI  = mutualinfo(best_simple.assignments, ground_truth, normed=true),
             KMeans_runtime      = full_kmeans_runtime,
 
             KC_runtime          = k_centering_runtime,
@@ -137,8 +134,6 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
             MFC_Simple_runtime  = full_simple_runtime,
         ))
 
-
-
         loop_elapsed = time() - loop_start
         println("   Completed in $(round(loop_elapsed, digits=2)) sec")
     end
@@ -151,22 +146,15 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
     println("\nFinal Results:")
     println(df)
 
-    println("\nRuntime Results:")
-    println(runtime_df)
-
     # Save to CSV
     output_file = string("data/Systhetic/",CSV_label)
-    runtime_output_file = string("data/Systhetic/runtime_",CSV_label)
 
 
     CSV.write(output_file, df)
     println("\nResults saved to $output_file")
-
-    CSV.write(runtime_output_file, runtime_df)
-    println("\nRuntime safed to $runtime_output_file")
     
     return df
 end
 
-# sigmas_to_test = 0.1:0.2:2
-# df_results = run_gaussian_sigma_sweep(sigmas_to_test,16,128,"clustering_results.csv")
+# sigmas_to_test = 0.1:0.2:1.5
+# df_results = run_gaussian_sigma_sweep(sigmas_to_test,16,128,"clustering_results.csv",2000,(-5,5))

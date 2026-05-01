@@ -52,5 +52,5 @@ function plot_clustering_results(df::DataFrame)
     return final_plot
 end
 
-df= CSV.read("clustering_results.csv", DataFrame)
+df= CSV.read("data/Systhetic/clustering_results.csv", DataFrame)
 plot_clustering_results(df)

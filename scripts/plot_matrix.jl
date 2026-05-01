@@ -213,7 +213,7 @@ function create_final_plot(name::String)
         grid = true,
         xguidefontsize=4,
         yguidefontsize=4,
-        xtickfontsize=4,
+        xtickfontsize=3,
         ytickfontsize=4,
         yticks=0:0.25:1,
         ylims=(0, 1),
@@ -323,14 +323,27 @@ function print_out_tabels(df::DataFrame,plots,j,label,gausin_label)
 
 end
 
-gausin = [16,128]
-dim = [4,16]
+# ARI: plot_matrix_ari
+# NMI: plot_matrix_nmi
+# Tables: matrix_table
+# Runtime: plot_matrix_runtime
+#           NOTE: legacy Runtime is stored as runtime_[FILE NAME]
+#                 New generated runtimes do not need to specify this
+# Gamma vs. NMI: plot_matrix_gamma
 
 
-# # create graphs for cluster
-df_matrix  = load_matrix(gausin,dim,"data/Systhetic/sigma_clustering_results")
-plot_matrix_nmi(df_matrix,gausin,dim)
+gausin = [16,64,256]
+dim = [64]
+output_file_name = "test_clustering_results"
 
+
+# create graphs for cluster
+df_matrix  = load_matrix(gausin,dim,string("data/Systhetic/",output_file_name))
+plot_matrix_runtime(df_matrix,gausin,dim)
+
+
+
+# LEGEACY Runtime example:
 # gausin = [16,32,64,128,256]
 # dim = [4,16,64,128]
 # create graphs for runtime
