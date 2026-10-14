@@ -7,11 +7,13 @@ include("evaluation.jl")
 
 
 
+
+
 function diminsion_gausian_test()
     # change number of gausians
 
     
-    gausin = [16,64]
+    gausin = [16,64,128,156]
     # gausin = [16,32,64,128,256] # for full sweep
 
     # change numer of diminsions

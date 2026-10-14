@@ -170,6 +170,83 @@ function metric_forest_completion_optimal(
 end
 
 
+function mulit_reps_metric_forest_completion(
+    points::AbstractVector{V},          # An array of type V representing data points
+    cluster_count::Int,                 # The total number of clusters the data was divided into initial clustering
+    cluster_assignments::Vector{Int},   # An array mapping each point to its assigned cluster ID. The length must exactly match the length of 'points.' Values should range from '1' to 'cluster_count'.
+    dist_func::F
+) where {V, F<:Function}
+
+    total_start_time = time()
+
+    T = Base.promote_op(dist_func, eltype(points), eltype(points))
+    cluster_edges = Tuple{Int, Int, T}[]
+
+    ### MST Each Cluster ###
+    sub_cluster_start = time()
+
+    # Group original point indices by their assigned cluster
+    global_indices_by_cluster = [Int[] for _ in 1:cluster_count]
+    for (global_index, cluster_id) in enumerate(cluster_assignments)
+        push!(global_indices_by_cluster[cluster_id], global_index)
+    end
+
+    # Run MST on each cluster
+    for c in 1:cluster_count
+        current_cluster_indices = global_indices_by_cluster[c]
+
+        # A cluster must have at least 2 points to form an edge
+        length(current_cluster_indices) < 2 && continue
+
+        current_cluster_subset = points[current_cluster_indices]
+        local_mst_edges = mst_implicit(current_cluster_subset, dist_func)
+
+        # Map the local MST indices back to the global dataset indices
+        for edge in local_mst_edges
+            global_a = current_cluster_indices[edge.a]
+            global_b = current_cluster_indices[edge.b]
+            edge_weight = edge.weight
+            push!(cluster_edges, (global_a, global_b, edge_weight))
+        end
+    end
+
+    sub_cluster_runtime = time() - sub_cluster_start
+
+    ### Completion Edges ###
+    completion_edges_start = time()
+
+    # NOTE: hardcoded budget of 20 extra reps per cluster, carried over
+    # from your original snippet -- confirm this is what you want, versus
+    # e.g. a parameter or a budget_mult sweep like the C++ version had.
+    budget = 20
+
+   all_reps = [(comp = c, reps = get_best_reps(cluster_count, points, v, budget + 1, dist_func))
+            for (c, v) in enumerate(global_indices_by_cluster)]
+
+    final_reps, final_cost, work = pick_reps(all_reps, cluster_count, budget)
+
+    unmapped_completion_edges, completion_edges_runtime = get_unmapped_completion_edges_from_reps(
+        points, global_indices_by_cluster, final_reps, dist_func
+    )
+
+    completion = mst!(cluster_count, unmapped_completion_edges)
+    
+    completion_edges = convert_mst_to_weight(completion)
+
+    completion_edges_runtime = time() - completion_edges_start
+    total_runtime = time() - total_start_time
+
+    return MFCResult(
+        cluster_edges,
+        completion_edges,
+        sub_cluster_runtime,
+        completion_edges_runtime,
+        total_runtime
+    )
+end
+
+
+
 function metric_forest_completion_simple(
     points::AbstractVector{V},          # An array of type V representing data points
     cluster_count::Int,                 # The total number of clusters the data was divided into initial clustering

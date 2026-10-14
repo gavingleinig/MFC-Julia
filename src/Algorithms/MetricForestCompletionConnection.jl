@@ -8,6 +8,11 @@ struct CompletionEdge{T<:Real}
     weight::T
 end
 
+struct RepInfo
+    index::Int
+    distance::Float64
+end
+
 
 function metric_forest_completion_Edges_approx_simple(
     points::AbstractVector{V},          # An array of type V representing data points
@@ -176,4 +181,68 @@ function metric_forest_completion_edges_random_connection(
     return unmapped_completion_edges
 
 
+end
+
+
+
+# Multi repersintative completion edges
+
+function get_unmapped_completion_edges_from_reps(
+    points::AbstractVector{V},
+    cluster_vecs::Vector{Vector{Int}},
+    rep_vecs::Vector{Vector{Tuple{Int,Float32}}},
+    dist_func::F
+) where {V, F<:Function}
+
+    cluster_count = length(cluster_vecs)
+    T = Base.promote_op(dist_func, eltype(points), eltype(points))
+
+    unmapped_completion_edges = Vector{CompletionEdge{T}}()
+    sizehint!(unmapped_completion_edges, cluster_count * (cluster_count - 1))
+
+    runtime = @elapsed begin
+        for i in 1:(cluster_count - 1)
+            for j in 2:cluster_count
+
+                if isempty(cluster_vecs[i]) || isempty(cluster_vecs[j])
+                    continue
+                end
+
+                best_weight = Inf
+                best_a_rep = -1
+                best_b_rep = -1
+
+                # every rep of cluster i vs every point of cluster j
+                for point_j_idx in cluster_vecs[j]
+                    for (i_rep, _cost) in rep_vecs[i]
+                        dist = dist_func(points[i_rep], points[point_j_idx])
+                        if dist < best_weight
+                            best_weight = dist
+                            best_a_rep = i_rep
+                            best_b_rep = point_j_idx
+                        end
+                    end
+                end
+
+                # every point of cluster i vs every rep of cluster j
+                for point_i_idx in cluster_vecs[i]
+                    for (j_rep, _cost) in rep_vecs[j]
+                        dist = dist_func(points[point_i_idx], points[j_rep])
+                        if dist < best_weight
+                            best_weight = dist
+                            best_a_rep = point_i_idx
+                            best_b_rep = j_rep
+                        end
+                    end
+                end
+
+                push!(
+                    unmapped_completion_edges,
+                    CompletionEdge(i, j, best_a_rep, best_b_rep, best_weight)
+                )
+            end
+        end
+    end
+
+    return unmapped_completion_edges, runtime
 end

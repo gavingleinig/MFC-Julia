@@ -188,7 +188,7 @@ function plot_data(matrix_df::Vector{Vector{DataFrame}},gausin::Vector{Int64}, d
     # add ledger 
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "K-Centering", marker = :circle,    legend = :inside,legendfontsize = 3, legend_column = 7, legendframestyle = :none, framestyle = :none, axis = false, grid = false)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Optimal MST", marker = :square,    legend = :inside)
-   plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
+    plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "Naive ST",    marker = :dtriangle, legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Approx",  marker = :diamond,   legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Optimal", marker = :star5,     legend = :inside)
     plot!(final_plot, rand(0), subplot = length(gausin)*length(dim)+1, label = "MFC Simple",  marker = :cross,     legend = :inside)
@@ -239,6 +239,7 @@ function plot_dataframe_nmi(df::DataFrame,plots,j,label,gausin_label)
     plot!(plots, sigmas,markersize = 2,  df.MFC_Approx_NMI, marker=:diamond, lw=1, subplot=j)
     plot!(plots, sigmas,markersize = 2,  df.MFC_Optimal_NMI, marker=:star5, lw=1, subplot=j)
     plot!(plots, sigmas,markersize = 2,  df.MFC_Simple_NMI, marker=:cross, lw=1, subplot=j)
+    plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Multi_NMI, marker=:star6, lw=.5)
     #plot!(plots, sigmas,markersize = 2,  df.KMeans_NMI, marker=:xcross, lw=1, subplot=j)
 
 
@@ -260,6 +261,7 @@ function plot_dataframe_ari(df::DataFrame,plots,j,label,gausin_label)
     plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Approx_ARI, marker=:diamond, lw=.5)
     plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Optimal_ARI, marker=:star5, lw=.5)
     plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Simple_ARI, marker=:cross, lw=.5)
+    plot!(plots, sigmas,subplot=j,markersize = 2 , df.MFC_Multi_ARI, marker=:star6, lw=.5)
     #plot!(plots, sigmas,subplot=j,markersize = 2 , df.KMeans_ARI, marker=:xcross, lw=.5)
 
 
@@ -344,7 +346,7 @@ output_file_name = "final_clustering_results"
 
 # create graphs for cluster
 df_matrix  = load_matrix(gausin,dim,string("data/Systhetic/",output_file_name))
-plot_matrix_nmi(df_matrix,gausin,dim)
+plot_matrix_ari(df_matrix,gausin,dim)
 
 
 

@@ -14,13 +14,13 @@ include("Algorithms/SingleLinkage.jl")
 export euclidean, jaccard, hamming
 
 # From Generators.jl
-export generate_gaussians
+export generate_gaussians, generate_rings
 
 # From Clustering.jl
 export ClusteringResult, k_centering
 
 # From MetricForests.jl
-export MFCResult, metric_forest_completion_approx, metric_forest_completion_optimal, metric_forest_completion_simple
+export MFCResult, metric_forest_completion_approx, metric_forest_completion_optimal, metric_forest_completion_simple,mulit_reps_metric_forest_completion
 
 # From SingleLinkage.jl
 export single_linkage_threshold, single_linkage_k_clusters, best_single_linkage_threshold,best_single_linkage_threshold_increment
@@ -29,6 +29,6 @@ export single_linkage_threshold, single_linkage_k_clusters, best_single_linkage_
 export mst_implicit, naive_random_st
 
 # From MetricForestUtils.jl
-export convert_mst_to_weight, compute_gamma_overlap
+export convert_mst_to_weight, compute_gamma_overlap, get_best_reps, pick_reps
 
 end # module MetricForestCompletion

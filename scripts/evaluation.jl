@@ -34,7 +34,8 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
             num_centers = num_gauss, 
             points_per_center = num_points ÷ num_gauss,
             mean_range = (PrecisionType(mean_range[1]), PrecisionType(mean_range[2])),
-            sigma_range = (PrecisionType(sigma), PrecisionType(sigma))
+            sigma_range = (PrecisionType(sigma), PrecisionType(sigma)),
+            
         )
 
         # Initial Clustering
@@ -50,11 +51,14 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         mfc_approx_runtime  = @elapsed mfc_approx_result = metric_forest_completion_approx(points, num_clusters, clustering_result.assignments, dist_func)
         mfc_optimal_runtime = @elapsed mfc_optimal_result = metric_forest_completion_optimal(points, num_clusters, clustering_result.assignments, dist_func)
         mfc_simple_runtime  = @elapsed mfc_simple_result = metric_forest_completion_simple(points, num_clusters, clustering_result.assignments, dist_func)
+        multi_rep_mfc_runtime = @elapsed multi_rep_mfc_result = mulit_reps_metric_forest_completion(points, num_clusters,clustering_result.assignments, dist_func)
 
         # Combine all edges 
         all_ST_approx_edges  = vcat(mfc_approx_result.cluster_edges, mfc_approx_result.completion_edges)
         all_ST_optimal_edges = vcat(mfc_optimal_result.cluster_edges, mfc_optimal_result.completion_edges)
         all_ST_simple_edges  = vcat(mfc_simple_result.cluster_edges, mfc_simple_result.completion_edges)
+        all_ST_multi_edges  = vcat(multi_rep_mfc_result.cluster_edges, multi_rep_mfc_result.completion_edges)
+
         
         n_pts = length(points) 
 
@@ -74,7 +78,7 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         approx_single_link_runtime  = @elapsed best_approx, approx_ari   = best_single_linkage_threshold_increment(all_ST_approx_edges, n_pts, ground_truth, .01 )
         optimal_single_link_runtime = @elapsed best_optimal, optimal_ari = best_single_linkage_threshold_increment(all_ST_optimal_edges, n_pts, ground_truth, .01 )
         simple_single_link_runtime  = @elapsed best_simple, simple_ari   = best_single_linkage_threshold_increment(all_ST_simple_edges, n_pts, ground_truth, .01 )
-
+        multi_rep_mfc_link_runtime = @elapsed best_multi, multi_ari      = best_single_linkage_threshold_increment(all_ST_multi_edges, n_pts, ground_truth, .01)
 
         # Full Runtime Caluculations
         full_mst_runtime     = mst_runtime                                 #  + mst_single_link_runtime
@@ -82,13 +86,14 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
         full_approx_runtime  = mfc_approx_runtime + k_centering_runtime    # + approx_single_link_runtime  
         full_optimal_runtime = mfc_optimal_runtime+ k_centering_runtime    # + optimal_single_link_runtime + k_centering_runtime
         full_simple_runtime  = mfc_simple_runtime + k_centering_runtime    # + simple_single_link_runtime  + k_centering_runtime
+        full_mutli_rep_runtime = multi_rep_mfc_runtime + k_centering_runtime
         println("mfc_approx_runtime cluster runtime: ",mfc_approx_result.sub_cluster_runtime)
         println("mfc_approx_runtime  completion runtime: ",mfc_approx_result.completion_edges_runtime )
         println("mfc_approx_runtime  full runtime: ",mfc_approx_result.completion_runtime )
         println("mfc_optimal_runtime cluster runtime: ",mfc_optimal_result.sub_cluster_runtime)
         println("mfc_optimal_runtime  completion runtime: ",mfc_optimal_result.completion_edges_runtime )
         println("mfc_optimal_runtime  full runtime: ",mfc_optimal_result.completion_runtime )
-
+        println("multi_rep_mfc_runtime  full runtime: ",full_mutli_rep_runtime )
 
 
 
@@ -119,6 +124,8 @@ function run_gaussian_sigma_sweep(sigma_values::AbstractVector,in_dim::Int64,in_
             
             MFC_Simple_ARI  = simple_ari,
             MFC_Simple_NMI  = mutualinfo(best_simple.assignments, ground_truth, normed=true),
+            MFC_Multi_ARI  = multi_ari,
+            MFC_Multi_NMI  = mutualinfo(best_multi.assignments, ground_truth, normed=true),
             KMeans_runtime      = full_kmeans_runtime,
 
             KC_runtime          = k_centering_runtime,
