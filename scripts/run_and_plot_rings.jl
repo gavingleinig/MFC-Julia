@@ -87,10 +87,12 @@ end
 # methods that follow local neighbor structure should do much better, as
 # long as noise_sigma doesn't make adjacent rings' points overlap.
 # ------------------------------------------------------------------
+
+#hi = 1 + (num_rings - 1) * 6 * noise_sigma 
 run_and_plot_rings(
     dim = 2,
-    num_rings = 3,
+    num_rings = 16,
     points_per_ring = 300,
-    radius_range = (2.0, 10.0),
+    radius_range = (2.0, 200.0),
     noise_sigma = .3,
 )

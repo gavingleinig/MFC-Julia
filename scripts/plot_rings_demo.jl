@@ -23,8 +23,8 @@ function main()
     rng = Xoshiro(123)
 
     dim             = 2
-    num_rings       = 3
-    points_per_ring = 300
+    num_rings       = 6
+    points_per_ring = 333
     radius_range    = (2.0, 10.0)
     noise_sigma     = 0.3   # try 0.0 for perfectly thin rings, or bump this up
                              # to see rings start to overlap/blur together

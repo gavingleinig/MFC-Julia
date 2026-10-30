@@ -87,7 +87,7 @@ function generate_gaussians(
     return points, labels
 end
 
-
+# figure out how this whole code works
 function generate_rings(
     ::Type{T};
     dim::Int,
@@ -97,24 +97,25 @@ function generate_rings(
     noise_sigma::T,
     rng::AbstractRNG = Xoshiro(123)
 ) where {T<:AbstractFloat}
-
+    # 1 -10, 1 - 91 
     total_points = num_rings * points_per_ring
     points = Vector{Vector{T}}(undef, total_points)
     labels = Vector{Int}(undef, total_points)
 
     radii = num_rings == 1 ?
         T[radius_range[1]] :
-        collect(range(radius_range[1], radius_range[2]; length = num_rings))
+        collect(range(radius_range[1], radius_range[2]; length = num_rings)) # figure out what this does
 
     idx = 1
     for ring_id in 1:num_rings
         r = radii[ring_id]
+        
         for p in 1:points_per_ring
             # Uniform random direction on the unit (dim-1)-sphere: draw a
             # standard normal vector and normalize it. This is the standard
             # trick for uniform sampling on a hypersphere surface.
             direction = randn(rng, T, dim)
-            direction ./= norm(direction)
+            direction ./= norm(direction) 
 
             # Radial noise gives the shell some thickness. Floor at a small
             # positive value so heavy noise can't fold points through the

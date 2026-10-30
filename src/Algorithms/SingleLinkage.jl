@@ -136,6 +136,7 @@ end
 Evaluate every edge weight as a clustering threshold to find the configuration that maximizes the Adjusted Rand Index (ARI) against the ground_truth
 Returns tuple of (best_threshold_ClusteringResult, max_ari).
 """
+
 function best_single_linkage_threshold(
     edges::Vector{Tuple{Int, Int, Float64}}, 
     num_points::Int,
@@ -146,6 +147,7 @@ function best_single_linkage_threshold(
     ari_max = 0
     best_threshold = ClusteringResult{Float64}(Vector{Int}(undef, 0),0.0)
     for e in edges
+        # 
         weight = e[3]
 
         threshold_result = single_linkage_threshold(edges, num_points,weight)

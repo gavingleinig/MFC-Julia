@@ -19,8 +19,8 @@ end
 
 function main()
     dim               = 2          # kept at 2 so the diagonal collapse is directly visible
-    num_centers       = 5
-    points_per_center = 200
+    num_centers       = 6
+    points_per_center = 333
     mean_range        = (-10.0, 10.0)
     sigma_range       = (0.5, 2.0)
 
